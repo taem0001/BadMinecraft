@@ -1,5 +1,4 @@
-#include "../lib/glad/include/glad/glad.h"
-#include <GLFW/glfw3.h>
+#include "../include/ui/gfx.h"
 #include <iostream>
 
 void error_callback(int error, const char *description) {
