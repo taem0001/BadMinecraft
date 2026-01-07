@@ -1,0 +1,6 @@
+# folders
+bin/
+
+# files
+.DS_Store
+*.o
