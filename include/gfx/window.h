@@ -1,11 +1,18 @@
 #pragma once
+
 #include "gfx.h"
 
 namespace Minecraft {
 	namespace GFX {
-		struct Window {
-			GLFWwindow *window;
-			int width, height;
+		class Window {
+			private:
+				GLFWwindow *handle;
+				int width, height;
+
+			public:
+				Window(int, int);
+				~Window();
+				GLFWwindow *get_handle();
 		};
 	} // namespace GFX
 } // namespace Minecraft

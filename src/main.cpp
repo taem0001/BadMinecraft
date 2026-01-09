@@ -1,53 +1,24 @@
-#include "../include/ui/gfx.h"
+#include "../include/gfx/gfx.h"
+#include "../include/gfx/window.h"
 #include <iostream>
 
-void error_callback(int error, const char *description) {
-	fprintf(stderr, "Error: %s\n", description);
-}
-
-static void key_callback(GLFWwindow *window, int key, int scancode, int action,
-						 int mods) {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
+using namespace Minecraft::GFX;
 
 int main() {
-	glfwSetErrorCallback(error_callback);
+	Window window(640, 480);
+	GLFWwindow *handle = window.get_handle();
 
-	if (!glfwInit()) {
-		exit(EXIT_FAILURE);
-	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow *window =
-		glfwCreateWindow(640, 480, "Minecraft", NULL, NULL);
-
-	if (!window) {
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-
-	glfwSetKeyCallback(window, key_callback);
- 
-    glfwMakeContextCurrent(window);
-    gladLoadGL();
-    glfwSwapInterval(1);
-
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(handle)) {
 		int width, height;
-		glfwGetFramebufferSize(window, &width, &height);
+		glfwGetFramebufferSize(handle, &width, &height);
 
 		glViewport(0, 0, width, height);
+		glClearColor(1, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glfwSwapBuffers(window);
-        glfwPollEvents();
+		glfwSwapBuffers(handle);
+		glfwPollEvents();
 	}
 
-	glfwDestroyWindow(window);
-	glfwTerminate();
 	return 0;
 }

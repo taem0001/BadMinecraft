@@ -1,7 +1,6 @@
-#ifndef GFX_H
-#define GFX_H
+#pragma once
 
+#define GLFW_INCLUDE_NONE
 #include "../../lib/glad/include/glad/glad.h"
 #include <GLFW/glfw3.h>
 
-#endif // !GFX_H

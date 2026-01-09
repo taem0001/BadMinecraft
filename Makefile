@@ -1,4 +1,4 @@
-CXX = clang
+CXX = clang++
 CXXFLAGS = -g -Wall -Wextra 
 CXXFLAGS += -Ilib/glad/include 
 LDFLAGS = lib/glad/src/glad.o -framework OpenGL -framework IOKit -framework CoreVideo -framework Cocoa -framework QuartzCore -framework Metal
@@ -8,7 +8,7 @@ GLFW_LIBS   := $(shell pkg-config --libs glfw3)
 CXXFLAGS += $(GLFW_CFLAGS)
 LDFLAGS += $(GLFW_LIBS)
 
-SRC = $(wildcard src/*.cpp)
+SRC = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)
 OBJ  = $(SRC:.cpp=.o)
 BIN = bin
 
@@ -26,7 +26,7 @@ run: all
 	$(BIN)/game
 
 game: $(OBJ)
-	$(CXX) -o $(BIN)/game $^ $(LDFLAGS)
+	$(CXX) -o $(BIN)/game -Iinclude $^ $(LDFLAGS)
 
 %.o: %.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
