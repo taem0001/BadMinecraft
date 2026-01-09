@@ -12,7 +12,7 @@ namespace Minecraft {
 			public:
 				Window(int, int);
 				~Window();
-				GLFWwindow *get_handle();
+				void windowLoop();
 		};
 	} // namespace GFX
 } // namespace Minecraft

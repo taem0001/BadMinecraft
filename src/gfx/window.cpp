@@ -29,7 +29,8 @@ namespace Minecraft {
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-			this->handle = glfwCreateWindow(width, height, "Minecraft", NULL, NULL);
+			this->handle =
+				glfwCreateWindow(width, height, "Minecraft", NULL, NULL);
 
 			if (!handle) {
 				glfwTerminate();
@@ -48,6 +49,18 @@ namespace Minecraft {
 			glfwTerminate();
 		}
 
-		GLFWwindow *Window::get_handle() { return handle; }
+		void Window::windowLoop() {
+			while (!glfwWindowShouldClose(handle)) {
+				int width, height;
+				glfwGetFramebufferSize(handle, &width, &height);
+
+				glViewport(0, 0, width, height);
+				glClearColor(1, 0, 0, 1);
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				glfwSwapBuffers(handle);
+				glfwPollEvents();
+			}
+		}
 	} // namespace GFX
 } // namespace Minecraft
