@@ -4,7 +4,7 @@
 namespace Minecraft {
 	namespace GFX {
 		// GLFW callback functions
-		void errorCallback(int error, const char *description) {
+		static void errorCallback(int error, const char *description) {
 			fprintf(stderr, "Error: %s\n", description);
 		}
 
@@ -12,6 +12,11 @@ namespace Minecraft {
 								int action, int mods) {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
+		}
+
+		static void framebufferSizeCallback(GLFWwindow *window, int width,
+											int height) {
+			glViewport(0, 0, width, height);
 		}
 
 		// Window class functions implemented
@@ -50,12 +55,10 @@ namespace Minecraft {
 		}
 
 		void Window::windowLoop() {
-			while (!glfwWindowShouldClose(handle)) {
-				int width, height;
-				glfwGetFramebufferSize(handle, &width, &height);
+			glfwSetFramebufferSizeCallback(handle, framebufferSizeCallback);
 
-				glViewport(0, 0, width, height);
-				glClearColor(1, 0, 0, 1);
+			while (!glfwWindowShouldClose(handle)) {
+				glClearColor(0.3, 0.7, 0.9, 1);
 				glClear(GL_COLOR_BUFFER_BIT);
 
 				glfwSwapBuffers(handle);

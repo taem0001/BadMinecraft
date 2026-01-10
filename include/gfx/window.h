@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../util/types.h"
 #include "gfx.h"
 
 namespace Minecraft {

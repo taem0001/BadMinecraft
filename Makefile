@@ -1,3 +1,4 @@
+CC = clang
 CXX = clang++
 CXXFLAGS = -g -Wall -Wextra 
 CXXFLAGS += -Ilib/glad/include 
@@ -17,7 +18,7 @@ BIN = bin
 all: dirs libs game
 
 libs:
-	cd lib/glad && $(CXX) -o src/glad.o -Iinclude -c src/glad.c
+	cd lib/glad && $(CC) -o src/glad.o -Iinclude -c src/glad.c
 
 dirs:
 	mkdir -p ./$(BIN)
