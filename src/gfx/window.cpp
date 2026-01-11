@@ -5,7 +5,7 @@ namespace Minecraft {
 	namespace GFX {
 		// GLFW callback functions
 		static void errorCallback(int error, const char *description) {
-			fprintf(stderr, "Error: %s\n", description);
+			fprintf(stderr, "[ERROR] %s\n", description);
 		}
 
 		static void keyCallback(GLFWwindow *window, int key, int scancode,
@@ -47,11 +47,11 @@ namespace Minecraft {
 			glfwMakeContextCurrent(handle);
 			gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 			glfwSwapInterval(1);
-		}
 
-		Window::~Window() {
-			glfwDestroyWindow(handle);
-			glfwTerminate();
+			// Log info
+			printf("[INFO] Renderer: %s.\n", glGetString(GL_RENDERER));
+			printf("[INFO] OpenGL version supported %s.\n",
+				   glGetString(GL_VERSION));
 		}
 
 		void Window::windowLoop() {
@@ -64,6 +64,13 @@ namespace Minecraft {
 				glfwSwapBuffers(handle);
 				glfwPollEvents();
 			}
+			printf("[INFO] Shutting down.\n");
 		}
+
+		Window::~Window() {
+			glfwDestroyWindow(handle);
+			glfwTerminate();
+		}
+
 	} // namespace GFX
 } // namespace Minecraft
