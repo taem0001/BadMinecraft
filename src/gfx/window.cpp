@@ -43,6 +43,8 @@ namespace Minecraft {
 			}
 
 			glfwSetKeyCallback(handle, keyCallback);
+			glfwSetFramebufferSizeCallback(handle, framebufferSizeCallback);
+
 
 			glfwMakeContextCurrent(handle);
 			gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -55,14 +57,13 @@ namespace Minecraft {
 		}
 
 		void Window::windowLoop() {
-			glfwSetFramebufferSizeCallback(handle, framebufferSizeCallback);
-
 			while (!glfwWindowShouldClose(handle)) {
+				glfwPollEvents();
+
 				glClearColor(0.3, 0.7, 0.9, 1);
-				glClear(GL_COLOR_BUFFER_BIT);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				glfwSwapBuffers(handle);
-				glfwPollEvents();
 			}
 			printf("[INFO] Shutting down.\n");
 		}

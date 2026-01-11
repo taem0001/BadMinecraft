@@ -9,6 +9,7 @@ namespace Minecraft {
 		class Renderer {
 			public:
 				Renderer();
+				~Renderer();
 
 			private:
 				struct VBO vbo;

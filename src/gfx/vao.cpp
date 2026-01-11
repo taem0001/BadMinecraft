@@ -18,5 +18,9 @@ namespace Minecraft {
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(index, size, type, GL_FALSE, offset, NULL);
 		}
+
+		void destroyVAO(struct VAO self) {
+			glDeleteVertexArrays(1, &self.handle);
+		}
 	} // namespace GFX
 } // namespace Minecraft

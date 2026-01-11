@@ -6,14 +6,14 @@
 namespace Minecraft {
 	namespace GFX {
 		class Window {
-			private:
-				GLFWwindow *handle;
-				int width, height;
-
 			public:
 				Window(int, int);
 				~Window();
 				void windowLoop();
+
+			private:
+				GLFWwindow *handle;
+				int width, height;
 		};
 	} // namespace GFX
 } // namespace Minecraft
