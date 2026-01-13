@@ -5,11 +5,14 @@
 namespace Minecraft {
 	namespace GFX {
 		struct Shader {
-				GLuint handle, vs_handle, fs_handle;
+				GLuint handle;
+
+				Shader(const char *, const char *);
+				~Shader();
+				void use();
+				void setBool(const char *, bool) const;
+				void setInt(const char *, int) const;
+				void setFloat(const char *, float) const;
 		};
-        
-        struct Shader createShader(const char *, const char *);
-        void linkShaders(struct Shader);
-        void destroyShader(struct Shader);
 	} // namespace GFX
 } // namespace Minecraft

@@ -72,7 +72,7 @@ namespace Minecraft {
 
 		void Window::render(Renderer *renderer) {
 			renderer->renderTriangle();
-			glUseProgram(renderer->shaders[0].handle);
+			renderer->shader->use();
 			bindVAO(renderer->vao);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 		}

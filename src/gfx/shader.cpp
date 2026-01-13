@@ -7,7 +7,7 @@ using namespace std;
 
 namespace Minecraft {
 	namespace GFX {
-		GLuint _convertShader(const char *path, GLenum type) {
+		GLuint _compile(const char *path, GLenum type) {
 			// Open shader file and save its contents in a string
 			FILE *fp = fopen(path, "r");
 			if (!fp) {
@@ -51,33 +51,43 @@ namespace Minecraft {
 			return shader;
 		}
 
-		struct Shader createShader(const char *vspath, const char *fspath) {
-			struct Shader self;
-			self.vs_handle = _convertShader(vspath, GL_VERTEX_SHADER);
-			self.fs_handle = _convertShader(fspath, GL_FRAGMENT_SHADER);
-			self.handle = glCreateProgram();
-			return self;
-		}
+		Shader::Shader(const char *vspath, const char *fspath) {
+			GLuint vertex = _compile(vspath, GL_VERTEX_SHADER);
+			GLuint fragment = _compile(fspath, GL_FRAGMENT_SHADER);
 
-		void linkShaders(struct Shader self) {
-			// Link shaders to the shader program
-			glAttachShader(self.handle, self.vs_handle);
-			glAttachShader(self.handle, self.fs_handle);
-			glLinkProgram(self.handle);
+			// Create shader program
+			handle = glCreateProgram();
+			glAttachShader(handle, vertex);
+			glAttachShader(handle, fragment);
+			glLinkProgram(handle);
 
 			// Check shader linking success
 			int success;
-			glGetProgramiv(self.handle, GL_LINK_STATUS, &success);
+			glGetProgramiv(handle, GL_LINK_STATUS, &success);
 			if (!success) {
 				fprintf(stderr, "[ERROR] Failed to link shader.\n");
 			}
 
 			// Delete the fragment and vertex shaders as they are no longer
 			// needed
-			glDeleteShader(self.vs_handle);
-			glDeleteShader(self.fs_handle);
+			glDeleteShader(vertex);
+			glDeleteShader(fragment);
 		}
 
-		void destroyShader(struct Shader self) { glDeleteProgram(self.handle); }
+		Shader::~Shader() { glDeleteProgram(handle); }
+
+		void Shader::use() { glUseProgram(handle); }
+
+		void Shader::setBool(const char *name, bool value) const {
+			glUniform1i(glGetUniformLocation(handle, name), (int)value);
+		}
+
+		void Shader::setInt(const const char *name, int value) const {
+			glUniform1i(glGetUniformLocation(handle, name), value);
+		}
+
+		void Shader::setFloat(const const char *name, float value) const {
+			glUniform1f(glGetUniformLocation(handle, name), value);
+		}
 	} // namespace GFX
 } // namespace Minecraft

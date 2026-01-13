@@ -6,16 +6,13 @@ namespace Minecraft {
 		Renderer::Renderer() {
 			this->vbo = createVBO(GL_ARRAY_BUFFER);
 			this->vao = createVAO();
-
-			this->shaders[0] = createShader("res/shaders/triangle.vert",
-											"res/shaders/triangle.frag");
-			linkShaders(shaders[0]);
+			this->shader = new Shader("res/shaders/triangle.vert", "res/shaders/triangle.frag");
 		}
 
 		Renderer::~Renderer() {
 			destroyVBO(this->vbo);
 			destroyVAO(this->vao);
-			destroyShader(shaders[0]);
+			this->shader->~Shader();
 		}
 
 		void Renderer::renderTriangle() {
