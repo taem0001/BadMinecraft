@@ -1,6 +1,6 @@
 CC = clang
 CXX = clang++
-CXXFLAGS = -g -Wall -Wextra 
+CXXFLAGS = -std=c++20 -g -Wall -Wextra
 CXXFLAGS += -Ilib/glad/include 
 LDFLAGS = lib/glad/src/glad.o -framework OpenGL -framework IOKit -framework CoreVideo -framework Cocoa -framework QuartzCore -framework Metal
 GLFW_CFLAGS := $(shell pkg-config --cflags glfw3)
