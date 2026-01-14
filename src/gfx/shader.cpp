@@ -17,7 +17,7 @@ namespace Minecraft {
 
 			fseek(fp, 0, SEEK_END);
 			int size = ftell(fp);
-			int n	 = size / sizeof(char);
+			int n = size / sizeof(char);
 
 			buf = (char *)malloc(sizeof(char) * n);
 			if (!buf) {
@@ -50,7 +50,7 @@ namespace Minecraft {
 		}
 
 		void Shader::init(const char *vspath, const char *fspath) {
-			GLuint vertex	= _compile(vspath, GL_VERTEX_SHADER);
+			GLuint vertex = _compile(vspath, GL_VERTEX_SHADER);
 			GLuint fragment = _compile(fspath, GL_FRAGMENT_SHADER);
 
 			// Create shader program

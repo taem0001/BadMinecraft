@@ -4,6 +4,8 @@
 
 namespace Minecraft {
 	namespace GFX {
+		using namespace std::chrono;
+
 		static void errorCallback(int error, const char *description) {
 			fprintf(stderr, "[ERROR] %s\n", description);
 		}
@@ -54,14 +56,28 @@ namespace Minecraft {
 		}
 
 		void Window::windowLoop() {
+			const int TICKS_PER_SECOND = 20;
+			const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+			const int MAX_FRAMESKIP = 5;
+
+			u64 nextgametick = getTickCount();
+			int loops;
+			float interpolation;
+
 			while (!glfwWindowShouldClose(handle)) {
 				glfwPollEvents();
+
+				loops = 0;
+				while (getTickCount() > nextgametick && loops < MAX_FRAMESKIP) {
+					// Update
+					nextgametick += SKIP_TICKS;
+					loops++;
+				}
 
 				glClearColor(0.3, 0.7, 0.9, 1);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				render(&renderer);
-
 				glfwSwapBuffers(handle);
 			}
 			printf("[INFO] Shutting down.\n");
@@ -77,6 +93,13 @@ namespace Minecraft {
 		Window::~Window() {
 			glfwDestroyWindow(handle);
 			glfwTerminate();
+		}
+
+		u64 Window::getTickCount() {
+			u64 ms = duration_cast<milliseconds>(
+						 system_clock::now().time_since_epoch())
+						 .count();
+			return ms / 50;
 		}
 	} // namespace GFX
 } // namespace Minecraft

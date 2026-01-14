@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../util/types.h"
-#include "renderer.h"
 #include "gfx.h"
+#include "renderer.h"
+#include <chrono>
 
 namespace Minecraft {
 	namespace GFX {
@@ -18,6 +19,7 @@ namespace Minecraft {
 				int width, height;
 
 				void render(Renderer *);
+				u64 getTickCount();
 		};
 	} // namespace GFX
 } // namespace Minecraft
