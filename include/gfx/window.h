@@ -18,14 +18,12 @@ namespace Minecraft {
 				struct Renderer renderer;
 				int width, height;
 				u64 deltatime, lastframe;
-				std::chrono::time_point<std::chrono::steady_clock> start;
 
 				static void errorCallback(int, const char *);
 				static void keyCallback(GLFWwindow *, int, int, int, int);
 				static void framebufferSizeCallback(GLFWwindow *, int, int);
 				void render();
 				void processInput();
-				u64 getTickCount();
 		};
 	} // namespace GFX
 } // namespace Minecraft

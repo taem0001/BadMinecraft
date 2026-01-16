@@ -1,52 +1,50 @@
 #include "../../include/gfx/shader.h"
 #include "glm/gtc/type_ptr.hpp"
+#include <fstream>
 #include <iostream>
+#include <string.h>
 
 using namespace std;
 
 namespace Minecraft {
 	namespace GFX {
+		long filelength(FILE *file) {
+			long numbytes;
+			long savedpos = ftell(file);
+			fseek(file, 0, SEEK_END);
+			numbytes = ftell(file);
+			fseek(file, savedpos, SEEK_SET);
+			return numbytes;
+		}
+
 		GLuint _compile(const char *path, GLenum type) {
-			// Open shader file and save its contents in a string
-			FILE *fp = fopen(path, "r");
-			if (!fp) {
-				fprintf(stderr, "[ERROR] Failed to open file.\n");
-				exit(-1);
+			// Open shader file and save to string
+			FILE *file = fopen(path, "r");
+			if (!file) {
+				fprintf(stderr, "[ERROR] Failed to open shader file.\n");
+				exit(EXIT_FAILURE);
 			}
+			int bytesinfile = filelength(file);
+			unsigned char *buf = (unsigned char *)malloc(bytesinfile + 1);
+			int bytesread = fread(buf, 1, bytesinfile, file);
+			buf[bytesread] = '\0';
+			fclose(file);
 
-			char *buf;
-
-			fseek(fp, 0, SEEK_END);
-			int size = ftell(fp);
-			int n = size / sizeof(char);
-
-			buf = (char *)malloc(sizeof(char) * n);
-			if (!buf) {
-				fprintf(stderr, "[ERROR] Failed to allocate memory.\n");
-				exit(-1);
-			}
-
-			fseek(fp, 0, 0);
-			int c, i = 0;
-			while (EOF != (c = getc(fp))) {
-				buf[i] = c;
-				i++;
-			}
-			fclose(fp);
-
-			// Compile the shader in OpenGL
+			// Compile the shader
 			GLuint shader = glCreateShader(type);
-			glShaderSource(shader, 1, &buf, NULL);
+			const char *shaderstrings[1];
+			shaderstrings[0] = (char *)buf;
+			glShaderSource(shader, 1, shaderstrings, NULL);
 			glCompileShader(shader);
+			free((void *)buf);
 
-			// Check if shader compiled successfully
+			// Check if compilation succeeded
 			int success;
 			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 			if (!success) {
 				fprintf(stderr, "[ERROR] Failed to compile shader.\n");
 			}
 
-			free(buf);
 			return shader;
 		}
 

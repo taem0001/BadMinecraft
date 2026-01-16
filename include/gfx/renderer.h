@@ -1,16 +1,15 @@
 #pragma once
 
+#include "../entity/camera.h"
 #include "gfx.h"
 #include "shader.h"
 #include "vao.h"
 #include "vbo.h"
-#include "../entity/camera.h"
 
 namespace Minecraft {
 	namespace GFX {
 		enum ShaderType { TRIANGLE = 0 };
 #define SHADERNUM (TRIANGLE + 1)
-
 
 		struct Renderer {
 				~Renderer();

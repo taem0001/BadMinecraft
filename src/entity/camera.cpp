@@ -3,7 +3,8 @@
 
 namespace Minecraft {
 	namespace Entity {
-		Camera::Camera(glm::vec3 p, glm::vec3 u, float y, float pi, float n, float f)
+		Camera::Camera(glm::vec3 p, glm::vec3 u, float y, float pi, float n,
+					   float f)
 			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED),
 			  mousesens(SENSITIVITY), fovy(FOVY) {
 			pos = p;

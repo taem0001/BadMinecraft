@@ -23,8 +23,8 @@ namespace Minecraft {
 		}
 
 		Window::Window(int w, int h)
-			: renderer(), width(w), height(h), deltatime(0), lastframe(0),
-			  start(steady_clock::now()) {
+			: renderer(), width(w), height(h), deltatime(0), lastframe(0) {
+
 			glfwSetErrorCallback(errorCallback);
 
 			if (!glfwInit()) {
@@ -59,28 +59,17 @@ namespace Minecraft {
 		}
 
 		void Window::windowLoop() {
-			const int TICKS_PER_SECOND = 20;
-			const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-			const int MAX_FRAMESKIP = 5;
-
-			u64 nextgametick = getTickCount();
-			int loops;
+			auto start = steady_clock::now();
 
 			while (!glfwWindowShouldClose(handle)) {
 				auto now = steady_clock::now();
-				u64 currentframe = duration_cast<milliseconds>(now - start).count();
+				u64 currentframe =
+					duration_cast<milliseconds>(now - start).count();
 				deltatime = currentframe - lastframe;
 				lastframe = currentframe;
 
 				glfwPollEvents();
 				processInput();
-
-				loops = 0;
-				// while (getTickCount() > nextgametick && loops < MAX_FRAMESKIP) {
-				// 	// Update
-				// 	nextgametick += SKIP_TICKS;
-				// 	loops++;
-				// }
 
 				glClearColor(0.3, 0.7, 0.9, 1);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -113,12 +102,6 @@ namespace Minecraft {
 		Window::~Window() {
 			glfwDestroyWindow(handle);
 			glfwTerminate();
-		}
-
-		u64 Window::getTickCount() {
-			auto now = steady_clock::now();
-			u64 ms = duration_cast<milliseconds>(now - start).count();
-			return ms / 50;
 		}
 
 		void Window::processInput() {

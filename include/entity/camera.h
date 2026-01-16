@@ -30,7 +30,8 @@ namespace Minecraft {
 				Camera(glm::vec3 = glm::vec3(0.0f, 0.0f, 0.0f),
 					   glm::vec3 = glm::vec3(0.0f, 1.0f, 0.0f), float = YAW,
 					   float = PITCH, float = NEAR, float = FAR);
-				Camera(float, float, float, float, float, float, float, float, float, float);
+				Camera(float, float, float, float, float, float, float, float,
+					   float, float);
 
 				glm::mat4 getViewMat();
 				void processKey(CamMovement, float);
