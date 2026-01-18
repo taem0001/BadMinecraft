@@ -10,8 +10,9 @@ CXXFLAGS += $(GLFW_CFLAGS)
 LDFLAGS += $(GLFW_LIBS)
 
 SRC = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)
-OBJ  = $(SRC:.cpp=.o)
+OBJ  = $(patsubst src/%.cpp,$(BUILD)/%.o,$(SRC))
 BIN = bin
+BUILD = build
 
 .PHONY: all clean
 
@@ -21,7 +22,7 @@ libs:
 	cd lib/glad && $(CC) -o src/glad.o -Iinclude -c src/glad.c
 
 dirs:
-	mkdir -p ./$(BIN)
+	mkdir -p $(BIN) $(BUILD)
 
 run: all
 	$(BIN)/game
@@ -29,8 +30,9 @@ run: all
 game: $(OBJ)
 	$(CXX) -o $(BIN)/game -Iinclude $^ $(LDFLAGS)
 
-%.o: %.cpp
+$(BUILD)/%.o: src/%.cpp
+	mkdir -p $(dir $@)
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
 clean: 
-	rm -rf $(BIN) $(OBJ)
+	rm -rf $(BIN) $(BUILD)
