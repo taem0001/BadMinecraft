@@ -3,7 +3,7 @@
 #include "../util/types.hpp"
 #include "gfx.hpp"
 #include "renderer.hpp"
-#include <chrono>
+#include "../util/macros.hpp"
 
 namespace Minecraft {
 	namespace GFX {
@@ -20,16 +20,14 @@ namespace Minecraft {
 				GLFWwindow *handle;
 				struct Renderer renderer;
 				int width, height;
-				u64 deltatime, lastframe;
-
-				static float xoffset;
-				static float yoffset;
+				double deltatime, lastframe;
 
 				static void errorCallback(int, const char *);
 				static void keyCallback(GLFWwindow *, int, int, int, int);
 				static void framebufferSizeCallback(GLFWwindow *, int, int);
-				static void mouseCallback(GLFWwindow *, double, double);
+
 				void render();
+				void processMouse();
 				void processInput();
 		};
 	} // namespace GFX

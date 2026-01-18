@@ -3,8 +3,8 @@
 
 namespace Minecraft {
 	namespace Entity {
-		Camera::Camera(glm::vec3 p, glm::vec3 u, float y, float pi, float n,
-					   float f)
+		Camera::Camera(glm::vec3 p, glm::vec3 u, double y, double pi, double n,
+					   double f)
 			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED),
 			  mousesens(SENSITIVITY), fovy(FOVY) {
 			pos = p;
@@ -16,8 +16,9 @@ namespace Minecraft {
 			updateCamVects();
 		}
 
-		Camera::Camera(float posX, float posY, float posZ, float upX, float upY,
-					   float upZ, float y, float p, float n, float f)
+		Camera::Camera(double posX, double posY, double posZ, double upX,
+					   double upY, double upZ, double y, double p, double n,
+					   double f)
 			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED),
 			  mousesens(SENSITIVITY), fovy(FOVY) {
 			pos = glm::vec3(posX, posY, posZ);
@@ -33,27 +34,27 @@ namespace Minecraft {
 			return glm::lookAt(pos, pos + front, up);
 		}
 
-		void Camera::processKey(CamMovement move, float deltatime) {
-			float vel = movespeed * (deltatime / 1000);
+		void Camera::processKey(CamMovement move, double deltatime) {
+			double vel = movespeed * deltatime;
 			switch (move) {
 			case FORWARD:
-				pos += front * vel;
+				pos += front * CASTTOFLOAT(vel);
 				break;
 			case BACKWARD:
-				pos -= front * vel;
+				pos -= front * CASTTOFLOAT(vel);
 				break;
 			case LEFT:
-				pos -= right * vel;
+				pos -= right * CASTTOFLOAT(vel);
 				break;
 			case RIGHT:
-				pos += right * vel;
+				pos += right * CASTTOFLOAT(vel);
 				break;
 			default:
 				break;
 			}
 		}
 
-		void Camera::processMouse(float xoffset, float yoffset,
+		void Camera::processMouse(double xoffset, double yoffset,
 								  GLboolean constrainpitch) {
 			xoffset *= mousesens;
 			yoffset *= mousesens;

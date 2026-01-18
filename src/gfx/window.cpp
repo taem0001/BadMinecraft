@@ -1,15 +1,9 @@
 #include "../../include/gfx/window.hpp"
 #include "../../include/gfx/renderer.hpp"
-#include <chrono>
 #include <iostream>
 
 namespace Minecraft {
 	namespace GFX {
-		using namespace std::chrono;
-
-		float Window::xoffset;
-		float Window::yoffset;
-
 		void Window::errorCallback(int error, const char *description) {
 			fprintf(stderr, "[ERROR] %s\n", description);
 		}
@@ -25,30 +19,9 @@ namespace Minecraft {
 			glViewport(0, 0, width, height);
 		}
 
-		void Window::mouseCallback(GLFWwindow *window, double xposIn,
-								   double yposIn) {
-			static float lastx = WIDTH / 2;
-			static float lasty = HEIGHT / 2;
-			static bool firstmouse = true;
-			float xpos = static_cast<float>(xposIn);
-			float ypos = static_cast<float>(yposIn);
-
-			if (firstmouse) {
-				lastx = xpos;
-				lasty = ypos;
-				firstmouse = !firstmouse;
-			}
-
-			xoffset = xpos - lastx;
-			yoffset = lasty - ypos;
-
-			lastx = xpos;
-			lasty = ypos;
-		}
-
 		Window::Window()
-			: renderer(), width(WIDTH), height(HEIGHT), deltatime(0),
-			  lastframe(0) {
+			: renderer(), width(WIDTH), height(HEIGHT), deltatime(0.0f),
+			  lastframe(0.0f) {
 
 			glfwSetErrorCallback(errorCallback);
 
@@ -70,7 +43,10 @@ namespace Minecraft {
 
 			glfwSetKeyCallback(handle, keyCallback);
 			glfwSetFramebufferSizeCallback(handle, framebufferSizeCallback);
-			glfwSetCursorPosCallback(handle, mouseCallback);
+
+			glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			if (glfwRawMouseMotionSupported())
+				glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
 			glfwMakeContextCurrent(handle);
 			gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -85,20 +61,16 @@ namespace Minecraft {
 		}
 
 		void Window::windowLoop() {
-			auto start = steady_clock::now();
 			renderer.prepareRect();
 
 			while (!glfwWindowShouldClose(handle)) {
-				renderer.cam.processMouse(xoffset, yoffset);
-
-				auto now = steady_clock::now();
-				u64 currentframe =
-					duration_cast<milliseconds>(now - start).count();
+				double currentframe = glfwGetTime();
 				deltatime = currentframe - lastframe;
 				lastframe = currentframe;
 
 				glfwPollEvents();
 				processInput();
+				processMouse();
 
 				glClearColor(0.3, 0.7, 0.9, 1);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -113,8 +85,9 @@ namespace Minecraft {
 			renderer.shader[0].use();
 
 			glm::mat4 proj = glm::perspective(
-				glm::radians(renderer.cam.fovy), (float)width / (float)height,
-				renderer.cam.near, renderer.cam.far);
+				glm::radians(CASTTOFLOAT(renderer.cam.fovy)),
+				(float)width / (float)height, CASTTOFLOAT(renderer.cam.near),
+				CASTTOFLOAT(renderer.cam.far));
 			renderer.shader[0].setMat4("projection", proj);
 
 			glm::mat4 view = renderer.cam.getViewMat();
@@ -130,6 +103,30 @@ namespace Minecraft {
 		Window::~Window() {
 			glfwDestroyWindow(handle);
 			glfwTerminate();
+		}
+
+		void Window::processMouse() {
+			static double lastx = WIDTH / 2.0f;
+			static double lasty = HEIGHT / 2.0f;
+			static bool firstmouse = true;
+			double xpos;
+			double ypos;
+
+			glfwGetCursorPos(handle, &xpos, &ypos);
+
+			if (firstmouse) {
+				lastx = xpos;
+				lasty = ypos;
+				firstmouse = !firstmouse;
+			}
+
+			double xoffset = xpos - lastx;
+			double yoffset = lasty - ypos;
+
+			lastx = xpos;
+			lasty = ypos;
+
+			renderer.cam.processMouse(xoffset, yoffset, false);
 		}
 
 		void Window::processInput() {
