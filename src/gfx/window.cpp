@@ -52,6 +52,8 @@ namespace Minecraft {
 			gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 			glfwSwapInterval(1);
 
+			glEnable(GL_DEPTH_TEST);
+
 			renderer.init();
 
 			// Log info
@@ -62,6 +64,8 @@ namespace Minecraft {
 
 		void Window::windowLoop() {
 			renderer.prepareRect();
+
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 			while (!glfwWindowShouldClose(handle)) {
 				double currentframe = glfwGetTime();
@@ -97,7 +101,7 @@ namespace Minecraft {
 			renderer.shader[0].setMat4("model", model);
 
 			bindVAO(renderer.vao);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		}
 
 		Window::~Window() {
