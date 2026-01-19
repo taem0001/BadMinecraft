@@ -10,7 +10,7 @@
 
 namespace Minecraft {
 	namespace Entity {
-		enum CamMovement { FORWARD, BACKWARD, LEFT, RIGHT };
+		enum CamMovement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 
 		const double YAW = -90.0;
 		const double PITCH = 0.0f;

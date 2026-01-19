@@ -49,6 +49,11 @@ namespace Minecraft {
 			case RIGHT:
 				pos += right * CASTTOFLOAT(vel);
 				break;
+			case UP:
+				pos += worldup * CASTTOFLOAT(vel);
+				break;
+			case DOWN:
+				pos -= worldup * CASTTOFLOAT(vel);
 			default:
 				break;
 			}

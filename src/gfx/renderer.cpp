@@ -5,7 +5,7 @@
 namespace Minecraft {
 	namespace GFX {
 		Renderer::Renderer()
-			: cam(Entity::Camera(glm::vec3(0.0f, 0.0f, 3.0f))),
+			: cam(Entity::Camera(glm::vec3(0.0f, 3.0f, 0.0f))),
 			  vbo(createVBO(GL_ARRAY_BUFFER)),
 			  ebo(createVBO(GL_ELEMENT_ARRAY_BUFFER)), vao(createVAO()) {
 			for (int i = 0; i < SHADERNUM; i++) {

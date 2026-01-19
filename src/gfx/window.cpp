@@ -124,6 +124,10 @@ namespace Minecraft {
 				cam.processKey(Entity::LEFT, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS)
 				cam.processKey(Entity::RIGHT, deltatime);
+			if (glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS)
+				cam.processKey(Entity::UP, deltatime);
+			if (glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+				cam.processKey(Entity::DOWN, deltatime);
 		}
 	} // namespace GFX
 } // namespace Minecraft
