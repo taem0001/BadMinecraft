@@ -12,11 +12,10 @@ namespace Minecraft {
 			public:
 				Window();
 				~Window();
-				void windowLoop();
+				void windowLoop(Renderer &renderer, World::World &world);
 
 			private:
 				GLFWwindow *handle;
-				struct Renderer renderer;
 				int width, height;
 				double deltatime, lastframe;
 
@@ -24,8 +23,8 @@ namespace Minecraft {
 				static void keyCallback(GLFWwindow *, int, int, int, int);
 				static void framebufferSizeCallback(GLFWwindow *, int, int);
 
-				void processMouse();
-				void processInput();
+				void processMouse(Renderer &renderer);
+				void processInput(Renderer &renderer);
 		};
 	} // namespace GFX
 } // namespace Minecraft

@@ -1,8 +1,8 @@
-#include "../include/gfx/window.hpp"
+#include "../include/game.hpp"
 #include <iostream>
 
 int main() {
-	Minecraft::GFX::Window window;
-	window.windowLoop();
+	Game game;
+	game.runGame();
 	return 0;
 }

@@ -15,16 +15,23 @@ namespace Minecraft {
 #define WIDTH	  1280
 #define HEIGHT	  720
 
-		struct Renderer {
+		class Renderer {
+			public:
+				Renderer();
 				~Renderer();
-				void init();
 				void renderWorld(World::World &world);
 
-				struct Shader shader[SHADERNUM];
+				Entity::Camera &getCam() { return cam; }
+				Shader *getShaders() { return shader; }
+				struct VBO getVBO() { return vbo; }
+				struct VBO getEBO() { return ebo; }
+				struct VAO getVAO() { return vao; }
+
+			private:
+				Shader shader[SHADERNUM];
+				Entity::Camera cam;
 				struct VBO vbo, ebo;
 				struct VAO vao;
-
-				Entity::Camera cam;
 		};
 	} // namespace GFX
 } // namespace Minecraft

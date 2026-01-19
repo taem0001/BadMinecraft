@@ -5,7 +5,7 @@
 namespace Minecraft {
 	namespace GFX {
 		void Window::errorCallback(int error, const char *description) {
-			fprintf(stderr, "[ERROR] %s\n", description);
+			std::cerr << "[ERROR] " << description << "." << std::endl;
 		}
 
 		void Window::keyCallback(GLFWwindow *window, int key, int scancode,
@@ -24,8 +24,7 @@ namespace Minecraft {
 		}
 
 		Window::Window()
-			: renderer(), width(WIDTH), height(HEIGHT), deltatime(0.0f),
-			  lastframe(0.0f) {
+			: width(WIDTH), height(HEIGHT), deltatime(0.0f), lastframe(0.0f) {
 
 			glfwSetErrorCallback(errorCallback);
 
@@ -58,33 +57,29 @@ namespace Minecraft {
 
 			glEnable(GL_DEPTH_TEST);
 
-			renderer.init();
-
 			// Log info
-			printf("[INFO] Renderer: %s.\n", glGetString(GL_RENDERER));
-			printf("[INFO] OpenGL version supported %s.\n",
-				   glGetString(GL_VERSION));
+			std::cout << "[INFO] Renderer: " << glGetString(GL_RENDERER) << "."
+					  << std::endl;
+			std::cout << "[INFO] OpenGL version supported "
+					  << glGetString(GL_VERSION) << "." << std::endl;
 		}
 
-		void Window::windowLoop() {
-			World::World world;
-
+		void Window::windowLoop(Renderer &r, World::World &w) {
 			while (!glfwWindowShouldClose(handle)) {
 				double currentframe = glfwGetTime();
 				deltatime = currentframe - lastframe;
 				lastframe = currentframe;
 
 				glfwPollEvents();
-				processInput();
-				processMouse();
+				processInput(r);
+				processMouse(r);
 
 				glClearColor(0.3, 0.7, 0.9, 1);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				renderer.renderWorld(world);
+				r.renderWorld(w);
 				glfwSwapBuffers(handle);
 			}
-			printf("[INFO] Shutting down.\n");
 		}
 
 		Window::~Window() {
@@ -92,7 +87,9 @@ namespace Minecraft {
 			glfwTerminate();
 		}
 
-		void Window::processMouse() {
+		void Window::processMouse(Renderer &r) {
+			Entity::Camera &cam = r.getCam();
+
 			static double lastx = WIDTH / 2.0f;
 			static double lasty = HEIGHT / 2.0f;
 			static bool firstmouse = true;
@@ -113,18 +110,20 @@ namespace Minecraft {
 			lastx = xpos;
 			lasty = ypos;
 
-			renderer.cam.processMouse(xoffset, yoffset, false);
+			cam.processMouse(xoffset, yoffset, false);
 		}
 
-		void Window::processInput() {
+		void Window::processInput(Renderer &r) {
+			Entity::Camera &cam = r.getCam();
+
 			if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
-				renderer.cam.processKey(Entity::FORWARD, deltatime);
+				cam.processKey(Entity::FORWARD, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS)
-				renderer.cam.processKey(Entity::BACKWARD, deltatime);
+				cam.processKey(Entity::BACKWARD, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS)
-				renderer.cam.processKey(Entity::LEFT, deltatime);
+				cam.processKey(Entity::LEFT, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS)
-				renderer.cam.processKey(Entity::RIGHT, deltatime);
+				cam.processKey(Entity::RIGHT, deltatime);
 		}
 	} // namespace GFX
 } // namespace Minecraft

@@ -4,17 +4,14 @@
 
 namespace Minecraft {
 	namespace GFX {
-		void Renderer::init() {
-			this->vbo = createVBO(GL_ARRAY_BUFFER);
-			this->ebo = createVBO(GL_ELEMENT_ARRAY_BUFFER);
-			this->vao = createVAO();
-
+		Renderer::Renderer()
+			: cam(Entity::Camera(glm::vec3(0.0f, 0.0f, 3.0f))),
+			  vbo(createVBO(GL_ARRAY_BUFFER)),
+			  ebo(createVBO(GL_ELEMENT_ARRAY_BUFFER)), vao(createVAO()) {
 			for (int i = 0; i < SHADERNUM; i++) {
 				this->shader[i].init("res/shaders/block.vert",
 									 "res/shaders/block.frag");
 			}
-
-			this->cam = Entity::Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 			bufferVBO(this->vbo, World::vertices, sizeof(World::vertices));
 			bufferVBO(this->ebo, World::indices, sizeof(World::indices));

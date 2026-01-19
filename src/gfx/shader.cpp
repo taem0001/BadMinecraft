@@ -21,11 +21,15 @@ namespace Minecraft {
 			// Open shader file and save to string
 			FILE *file = fopen(path, "r");
 			if (!file) {
-				fprintf(stderr, "[ERROR] Failed to open shader file.\n");
+				std::cerr << "[ERROR] Failed to open shader file." << std::endl;
 				exit(EXIT_FAILURE);
 			}
 			int bytesinfile = filelength(file);
 			unsigned char *buf = (unsigned char *)malloc(bytesinfile + 1);
+			if (!buf) {
+				std::cerr << "[ERROR] Failed to allocate memory." << std::endl;
+			}
+
 			int bytesread = fread(buf, 1, bytesinfile, file);
 			buf[bytesread] = '\0';
 			fclose(file);
@@ -42,7 +46,7 @@ namespace Minecraft {
 			int success;
 			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 			if (!success) {
-				fprintf(stderr, "[ERROR] Failed to compile shader.\n");
+				std::cerr << "[ERROR] Failed to compile shader." << std::endl;
 			}
 
 			return shader;
@@ -62,7 +66,7 @@ namespace Minecraft {
 			int success;
 			glGetProgramiv(handle, GL_LINK_STATUS, &success);
 			if (!success) {
-				fprintf(stderr, "[ERROR] Failed to link shader.\n");
+				std::cerr << "[ERROR] Failed to link shader." << std::endl;
 			}
 
 			// Delete the fragment and vertex shaders as they are no longer
