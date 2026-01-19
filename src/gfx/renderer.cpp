@@ -15,6 +15,10 @@ namespace Minecraft {
 			}
 
 			this->cam = Entity::Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
+			bufferVBO(this->vbo, World::vertices, sizeof(World::vertices));
+			bufferVBO(this->ebo, World::indices, sizeof(World::indices));
+			attrVAO(this->vao, this->vbo, this->ebo, 0, 3, GL_FLOAT, 0);
 		}
 
 		Renderer::~Renderer() {
@@ -23,10 +27,26 @@ namespace Minecraft {
 			destroyVAO(this->vao);
 		}
 
-		void Renderer::prepareRect() {
-			bufferVBO(this->vbo, vertices, sizeof(vertices));
-			bufferVBO(this->ebo, indices, sizeof(indices));
-			attrVAO(this->vao, this->vbo, this->ebo, 0, 3, GL_FLOAT, 0);
+		void Renderer::renderWorld(World::World &w) {
+			shader[0].use();
+
+			glm::mat4 proj =
+				glm::perspective(glm::radians(CASTTOFLOAT(cam.fovy)),
+								 (float)WIDTH / (float)HEIGHT,
+								 CASTTOFLOAT(cam.near), CASTTOFLOAT(cam.far));
+			shader[0].setMat4("projection", proj);
+
+			glm::mat4 view = cam.getViewMat();
+			shader[0].setMat4("view", view);
+
+			bindVAO(vao);
+
+			for (int i = 0; i < 25; i++) {
+				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::translate(model, w.blocks[i].pos);
+				shader[0].setMat4("model", model);
+				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+			}
 		}
 	} // namespace GFX
 } // namespace Minecraft

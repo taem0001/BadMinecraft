@@ -12,6 +12,10 @@ namespace Minecraft {
 								 int action, int mods) {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
+			if (key == GLFW_KEY_L && action == GLFW_PRESS)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			if (key == GLFW_KEY_F && action == GLFW_PRESS)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
 		void Window::framebufferSizeCallback(GLFWwindow *window, int width,
@@ -63,9 +67,7 @@ namespace Minecraft {
 		}
 
 		void Window::windowLoop() {
-			renderer.prepareRect();
-
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			World::World world;
 
 			while (!glfwWindowShouldClose(handle)) {
 				double currentframe = glfwGetTime();
@@ -79,29 +81,10 @@ namespace Minecraft {
 				glClearColor(0.3, 0.7, 0.9, 1);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				render();
+				renderer.renderWorld(world);
 				glfwSwapBuffers(handle);
 			}
 			printf("[INFO] Shutting down.\n");
-		}
-
-		void Window::render() {
-			renderer.shader[0].use();
-
-			glm::mat4 proj = glm::perspective(
-				glm::radians(CASTTOFLOAT(renderer.cam.fovy)),
-				(float)width / (float)height, CASTTOFLOAT(renderer.cam.near),
-				CASTTOFLOAT(renderer.cam.far));
-			renderer.shader[0].setMat4("projection", proj);
-
-			glm::mat4 view = renderer.cam.getViewMat();
-			renderer.shader[0].setMat4("view", view);
-
-			glm::mat4 model = glm::mat4(1.0f);
-			renderer.shader[0].setMat4("model", model);
-
-			bindVAO(renderer.vao);
-			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		}
 
 		Window::~Window() {

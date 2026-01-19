@@ -2,8 +2,6 @@
 
 namespace Minecraft {
     namespace World {
-        void Block::render() {
-            
-        }
+
     }
 }

@@ -1,15 +1,13 @@
 #pragma once
 
+#include "../util/macros.hpp"
 #include "../util/types.hpp"
+#include "../world/world.hpp"
 #include "gfx.hpp"
 #include "renderer.hpp"
-#include "../util/macros.hpp"
 
 namespace Minecraft {
 	namespace GFX {
-#define WIDTH  1280
-#define HEIGHT 720
-
 		class Window {
 			public:
 				Window();
@@ -26,7 +24,6 @@ namespace Minecraft {
 				static void keyCallback(GLFWwindow *, int, int, int, int);
 				static void framebufferSizeCallback(GLFWwindow *, int, int);
 
-				void render();
 				void processMouse();
 				void processInput();
 		};
