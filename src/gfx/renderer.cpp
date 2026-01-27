@@ -13,20 +13,6 @@ namespace Minecraft {
 									 "res/shaders/block.frag");
 			}
 			texture.init("res/textures/dirt.png");
-
-			bufferVBO(this->vbo, World::vertices, sizeof(World::vertices));
-			bufferVBO(this->ebo, World::indices, sizeof(World::indices));
-			
-			bindVAO(this->vao);
-			bindVBO(this->vbo);
-			bindVBO(this->ebo);
-
-			// Setup vertex pointer arrays
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
-			glEnableVertexAttribArray(0);
-
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
-			glEnableVertexAttribArray(1);
 		}
 
 		Renderer::~Renderer() {
@@ -47,14 +33,32 @@ namespace Minecraft {
 			glm::mat4 view = cam.getViewMat();
 			shader[0].setMat4("view", view);
 
-			bindVAO(vao);
+			struct World::Chunk c = w.getChunk();
+			c.generateMesh();
+			renderChunk(c);
+		}
 
-			for (int i = 0; i < 25; i++) {
-				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, w.blocks[i].pos);
-				shader[0].setMat4("model", model);
-				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void *)0);
-			}
+		void Renderer::renderChunk(struct World::Chunk &c) {
+			bufferVBO(this->vbo, c.vertices.data(),
+					  static_cast<GLsizeiptr>(c.vertices.size() *
+											  sizeof(World::Vertex)));
+			bindVBO(this->vbo);
+
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+								  sizeof(World::Vertex), (void *)0);
+			glEnableVertexAttribArray(0);
+
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
+								  sizeof(World::Vertex),
+								  (void *)(3 * sizeof(float)));
+			glEnableVertexAttribArray(1);
+
+			bindVAO(this->vao);
+
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, c.offset);
+			shader[0].setMat4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, c.vertices.size());
 		}
 	} // namespace GFX
 } // namespace Minecraft

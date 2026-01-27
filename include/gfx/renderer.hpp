@@ -3,6 +3,8 @@
 #include "../entity/camera.hpp"
 #include "../util/macros.hpp"
 #include "../world/world.hpp"
+#include "../world/chunk.hpp"
+#include "../world/block.hpp"
 #include "gfx.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
@@ -21,6 +23,7 @@ namespace Minecraft {
 				Renderer();
 				~Renderer();
 				void renderWorld(World::World &world);
+				void renderChunk(World::Chunk &chunk);
 
 				Entity::Camera &getCam() { return cam; }
 				Shader *getShaders() { return shader; }
