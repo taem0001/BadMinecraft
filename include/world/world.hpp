@@ -23,6 +23,7 @@ namespace Minecraft {
 
 				void setBlockWorld(int wx, int wy, int wz, Block::BlockID id);
 				void createChunk(const ChunkCoord &coord);
+				void markDirtyIfLoaded(const ChunkCoord &coord);
 
 				static inline int floorDiv(int a, int b);
 				static inline int floorMod(int a, int b);

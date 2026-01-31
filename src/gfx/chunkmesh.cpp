@@ -39,12 +39,6 @@ namespace Minecraft {
 									  sizeof(Meshing::Vertex),
 									  (void *)offsetof(Meshing::Vertex, uv));
 
-				// loc 2 texid location
-				// glEnableVertexAttribArray(2);
-				// glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE,
-				//					  sizeof(Meshing::Vertex),
-				//					  (void *)offsetof(Meshing::Vertex, texid));
-
 				configured = true;
 			}
 
@@ -54,8 +48,8 @@ namespace Minecraft {
 		void ChunkMesh::draw() const {
 			if (empty()) return;
 			glBindVertexArray(vao);
-			glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT,
-						   (void *)3);
+			glDrawElements(GL_TRIANGLES, (GLsizei)indexCount, GL_UNSIGNED_INT,
+						   (void *)0);
 			glBindVertexArray(0);
 		}
 
@@ -77,6 +71,7 @@ namespace Minecraft {
 			ebo = 0;
 			vao = 0;
 			vertexCount = 0;
+			indexCount = 0;
 			configured = false;
 		}
 
@@ -85,6 +80,7 @@ namespace Minecraft {
 			vbo = std::exchange(other.vbo, 0);
 			ebo = std::exchange(other.ebo, 0);
 			vertexCount = std::exchange(other.vertexCount, 0);
+			indexCount = std::exchange(other.indexCount, 0);
 			configured = std::exchange(other.configured, false);
 		}
 	} // namespace GFX

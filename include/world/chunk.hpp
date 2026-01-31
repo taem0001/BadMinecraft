@@ -27,6 +27,10 @@ namespace Minecraft {
 					return (x == other.x && y == other.y && z == other.z);
 				}
 
+				ChunkCoord operator+(const ChunkCoord &other) const noexcept {
+					return {x + other.x, y + other.y, z + other.z};
+				}
+
 				friend std::ostream &operator<<(std::ostream &out, const ChunkCoord &cc) noexcept {
 					return out << "(" << cc.x << "; " << cc.y << "; " << cc.z << ")";
 				}

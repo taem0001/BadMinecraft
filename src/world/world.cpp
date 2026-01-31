@@ -14,14 +14,14 @@ namespace Minecraft {
 
 		// Getters / Setters
 		Chunk *World::getChunk(const ChunkCoord &coord) {
-			// If chunk does not exist, then create it
+			// If chunk exists, return pointer, otherwise null
 			auto it = chunks.find(coord);
 			if (it == chunks.end()) return nullptr;
 			return &it->second;
 		}
 
 		const Chunk *World::getChunk(const ChunkCoord &coord) const {
-			// If chunk does not exist, then create it
+			// If chunk exists, return pointer, otherwise null
 			auto it = chunks.find(coord);
 			if (it == chunks.end()) return nullptr;
 			return &it->second;
@@ -43,6 +43,13 @@ namespace Minecraft {
 
 		const std::unordered_map<ChunkCoord, Chunk> &World::getChunks() const {
 			return chunks;
+		}
+
+		void World::markDirtyIfLoaded(const ChunkCoord &coord) {
+			Chunk *c = getChunk(coord);
+			if (c != nullptr) {
+				c->dirty = true;
+			}
 		}
 
 		Block::BlockID World::getBlockWorld(int wx, int wy, int wz) const {
@@ -70,6 +77,13 @@ namespace Minecraft {
 			if (inserted) {
 				c.coord = coord;
 				c.dirty = true;
+				c.blocks.fill(Block::AIR);
+
+				markDirtyIfLoaded(coord + (ChunkCoord){-1, 0, 0});
+				markDirtyIfLoaded(coord + (ChunkCoord){1, 0, 0});
+				markDirtyIfLoaded(coord + (ChunkCoord){0, 0, -1});
+				markDirtyIfLoaded(coord + (ChunkCoord){0, 0, 1});
+
 				std::cout << "[INFO] Created chunk at " << coord << "."
 						  << std::endl;
 			}
@@ -86,6 +100,14 @@ namespace Minecraft {
 			int localx = floorMod(wx, CHUNK_MAX_X);
 			int localy = floorMod(wy, CHUNK_MAX_Y);
 			int localz = floorMod(wz, CHUNK_MAX_Z);
+
+			// Mark neighboring chunk dirty if at chunk border
+			if (localx == 0) markDirtyIfLoaded(coord + (ChunkCoord){-1, 0, 0});
+			if (localx == CHUNK_MAX_X - 1)
+				markDirtyIfLoaded(coord + (ChunkCoord){1, 0, 0});
+			if (localz == 0) markDirtyIfLoaded(coord + (ChunkCoord){0, 0, -1});
+			if (localz == CHUNK_MAX_Z - 1)
+				markDirtyIfLoaded(coord + (ChunkCoord){0, 0, 1});
 
 			// Place block at the coordinates
 			chunk.setLocalBlock(localx, localy, localz, id);

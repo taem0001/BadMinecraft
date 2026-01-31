@@ -62,7 +62,6 @@ namespace Minecraft {
 		}
 
 		bool ChunkMesher::isAir(const BlockQuery &query, int x, int y, int z) {
-			// TODO: Implement checking across chunks
 			return query(x, y, z) == Block::AIR;
 		}
 
@@ -79,7 +78,7 @@ namespace Minecraft {
 			for (int z = 0; z < SZ; z++) {
 				for (int y = 0; y < SY; y++) {
 					for (int x = 0; x < SX; x++) {
-						Block::BlockID id = query(x, y, z);
+						Block::BlockID id = chunk.getLocalBlock(x, y, z);
 						if (id == Block::AIR) continue;
 
 						int wx = x + baseX;
