@@ -12,19 +12,26 @@ namespace Minecraft {
 		}
 
 		void Renderer::updateChunks(World::World &w) {
+			auto query = [&](int x, int y, int z) {
+				return w.getBlockWorld(x, y, z);
+			};
+
 			auto &chunks = w.getChunks();
 			for (auto it = chunks.begin(); it != chunks.end(); it++) {
-				auto &chunk = w.getChunk(it->first);
+				auto &chunk = it->second;
 				if (!chunk.dirty) continue;
 
-				Meshing::MeshData cpu = Meshing::ChunkMesher::build(chunk);
-				chunk.mesh->upload(cpu);
+				Meshing::MeshData cpu =
+					Meshing::ChunkMesher::build(chunk, query);
+
+				auto [mit, inserted] = meshes.try_emplace(it->first);
+				mit->second.upload(cpu);
 
 				chunk.dirty = false;
 			}
 		}
 
-		void Renderer::renderWorld(const World::World &w) {
+		void Renderer::renderWorld() {
 			shader.use();
 			texture.bind();
 
@@ -36,18 +43,14 @@ namespace Minecraft {
 			glm::mat4 view = cam.getViewMat();
 			shader.setMat4("view", view);
 
-			auto &chunks = w.getChunks();
-			for (auto it = chunks.begin(); it != chunks.end(); it++) {
-				auto &chunk = w.getChunk(it->first);
-				if (chunk.mesh->empty()) {
-					continue;
-				}
+			for (auto &[coord, mesh] : meshes) {
+				if (mesh.empty()) continue;
 
-				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, chunk.worldOrigin());
+				glm::mat4 model =
+					glm::translate(glm::mat4(1.0f), coord.worldOrigin());
 				shader.setMat4("model", model);
 
-				chunk.mesh->draw();
+				mesh.draw();
 			}
 		}
 	} // namespace GFX

@@ -61,36 +61,42 @@ namespace Minecraft {
 			return FACE_PZ;
 		}
 
-		bool ChunkMesher::isAir(const World::Chunk &c, int x, int y, int z) {
+		bool ChunkMesher::isAir(const BlockQuery &query, int x, int y, int z) {
 			// TODO: Implement checking across chunks
-			if (x < 0 || x >= SX) return true;
-			if (y < 0 || y >= SY) return true;
-			if (z < 0 || z >= SZ) return true;
-			return c.getBlock(x, y, z) == Block::AIR;
+			return query(x, y, z) == Block::AIR;
 		}
 
-		MeshData ChunkMesher::build(const World::Chunk &chunk) {
+		MeshData ChunkMesher::build(const World::Chunk &chunk,
+									const BlockQuery &query) {
 			MeshData out;
 			out.vertices.clear();
 			out.indices.clear();
 
+			const int baseX = chunk.coord.x * SX;
+			const int baseY = chunk.coord.y * SY;
+			const int baseZ = chunk.coord.z * SZ;
+
 			for (int z = 0; z < SZ; z++) {
 				for (int y = 0; y < SY; y++) {
 					for (int x = 0; x < SX; x++) {
-						Block::BlockID id = chunk.getBlock(x, y, z);
+						Block::BlockID id = query(x, y, z);
 						if (id == Block::AIR) continue;
 
-						if (isAir(chunk, x, y, z + 1))
+						int wx = x + baseX;
+						int wy = y + baseY;
+						int wz = z + baseZ;
+
+						if (isAir(query, wx, wy, wz + 1))
 							emitFace(out, x, y, z, FaceDir::PZ, id);
-						if (isAir(chunk, x, y, z - 1))
+						if (isAir(query, wx, wy, wz - 1))
 							emitFace(out, x, y, z, FaceDir::NZ, id);
-						if (isAir(chunk, x, y + 1, z))
+						if (isAir(query, wx, wy + 1, wz))
 							emitFace(out, x, y, z, FaceDir::PY, id);
-						if (isAir(chunk, x, y - 1, z))
+						if (isAir(query, wx, wy - 1, wz))
 							emitFace(out, x, y, z, FaceDir::NY, id);
-						if (isAir(chunk, x + 1, y, z))
+						if (isAir(query, wx + 1, wy, wz))
 							emitFace(out, x, y, z, FaceDir::PX, id);
-						if (isAir(chunk, x - 1, y, z))
+						if (isAir(query, wx - 1, wy, wz))
 							emitFace(out, x, y, z, FaceDir::NX, id);
 					}
 				}

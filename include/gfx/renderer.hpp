@@ -21,7 +21,7 @@ namespace Minecraft {
 				Renderer();
 
 				void updateChunks(World::World &world);
-				void renderWorld(const World::World &world);
+				void renderWorld();
 
 				Entity::Camera &getCam() { return cam; }
 				const Entity::Camera &getCam() const { return cam; }
@@ -32,6 +32,7 @@ namespace Minecraft {
 				}
 
 			private:
+				std::unordered_map<World::ChunkCoord, ChunkMesh> meshes;
 				Entity::Camera cam;
 
 				Shader shader;

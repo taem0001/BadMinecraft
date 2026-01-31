@@ -10,15 +10,22 @@ namespace Minecraft {
 			public:
 				World();
 
-				Chunk &getChunk(const ChunkCoord &coord);
-				const Chunk &getChunk(const ChunkCoord &coord) const;
+				Chunk *getChunk(const ChunkCoord &coord);
+				const Chunk *getChunk(const ChunkCoord &coord) const;
+				Chunk &getOrCreateChunk(const ChunkCoord &coord);
 				std::unordered_map<ChunkCoord, Chunk> &getChunks();
 				const std::unordered_map<ChunkCoord, Chunk> &getChunks() const;
-				void setBlock(const ChunkCoord &coord, int x, int y, int z,
-							  Block::BlockID id);
+
+				Block::BlockID getBlockWorld(int x, int y, int z) const;
 
 			private:
 				std::unordered_map<ChunkCoord, Chunk> chunks;
+
+				void setBlockWorld(int wx, int wy, int wz, Block::BlockID id);
+				void createChunk(const ChunkCoord &coord);
+
+				static inline int floorDiv(int a, int b);
+				static inline int floorMod(int a, int b);
 		};
 	} // namespace World
 } // namespace Minecraft
