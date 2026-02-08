@@ -3,18 +3,21 @@
 namespace Minecraft {
 	namespace World {
 		World::World() {
+			const double freq = 0.01;
+			const int amp = 10;
+
 			for (int z = 0; z < CHUNK_MAX_Z * 10; z++) {
-				for (int y = 0; y < CHUNK_MAX_Y; y++) {
-					for (int x = 0; x < CHUNK_MAX_X * 10; x++) {
-						double perlin =
-							Perlin::perlin((double)x * 0.01, (double)y * 0.01,
-										   (double)z * 0.01);
-						std::cout << "[INFO] " << perlin << std::endl;
-						if (perlin < 0.0) {
-							setBlockWorld(x, y, z, Block::STONE);
-						} else {
-							setBlockWorld(x, y, z, Block::AIR);
-						}
+				for (int x = 0; x < CHUNK_MAX_X * 10; x++) {
+					double n =
+						Perlin::perlin((double)x * freq, 0.0, (double)z * freq);
+					double h0 = 0.5 * (n + 1);
+					int height = (int)std::round(h0 * amp);
+					if (height < 0) height = 0;
+					if (height >= CHUNK_MAX_Y) height = CHUNK_MAX_Y - 1;
+					if (n < 0) {
+						setBlockWorld(x, height, z, Block::DIRT);
+					} else {
+						setBlockWorld(x, height, z, Block::STONE);
 					}
 				}
 			}
