@@ -140,7 +140,7 @@ namespace Minecraft {
 				Vertex v;
 				v.position = {f[3 * i] + ox, f[3 * i + 1] + oy,
 							  f[3 * i + 2] + oz};
-				if (dir == FaceDir::NZ || dir == FaceDir::PX) {
+				if (dir == FaceDir::NZ || dir == FaceDir::PX || dir == FaceDir::PY) {
 					int idx = (4 - i) % 4;
 					v.uv = {uv[2 * idx], uv[2 * idx + 1]};
 				} else {

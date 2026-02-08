@@ -11,7 +11,7 @@ namespace Minecraft {
 
 		const double YAW = -90.0;
 		const double PITCH = 0.0f;
-		const double SPEED = 3.5f;
+		const double SPEED = 7.0f;
 		const double SENSITIVITY = 0.1f;
 		const double FOVY = 45.0f;
 		const double NEAR = 0.1f;

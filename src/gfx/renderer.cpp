@@ -4,7 +4,7 @@ namespace Minecraft {
 	namespace GFX {
 		Renderer::Renderer()
 			: cam(Entity::Camera(glm::vec3(40.0f, 10.0f, 40.0f))), width(WIDTH),
-			  height(HEIGHT), RENDER_RADIUS(SQUARE(1.5)) {
+			  height(HEIGHT), RENDER_RADIUS(SQUARE(2.5)) {
 			shader.init("res/shaders/block.vert", "res/shaders/block.frag");
 			texture.init("res/textures/blockatlas.png");
 		}
