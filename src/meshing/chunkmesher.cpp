@@ -86,17 +86,23 @@ namespace Minecraft {
 						int wz = z + baseZ;
 
 						if (isAir(query, wx, wy, wz + 1))
-							emitFace(out, x, y, z, FaceDir::PZ, id);
+							emitFace(out, x, y, z, FaceDir::PZ,
+									 (Block::BlockType)id);
 						if (isAir(query, wx, wy, wz - 1))
-							emitFace(out, x, y, z, FaceDir::NZ, id);
+							emitFace(out, x, y, z, FaceDir::NZ,
+									 (Block::BlockType)id);
 						if (isAir(query, wx, wy + 1, wz))
-							emitFace(out, x, y, z, FaceDir::PY, id);
+							emitFace(out, x, y, z, FaceDir::PY,
+									 (Block::BlockType)id);
 						if (isAir(query, wx, wy - 1, wz))
-							emitFace(out, x, y, z, FaceDir::NY, id);
+							emitFace(out, x, y, z, FaceDir::NY,
+									 (Block::BlockType)id);
 						if (isAir(query, wx + 1, wy, wz))
-							emitFace(out, x, y, z, FaceDir::PX, id);
+							emitFace(out, x, y, z, FaceDir::PX,
+									 (Block::BlockType)id);
 						if (isAir(query, wx - 1, wy, wz))
-							emitFace(out, x, y, z, FaceDir::NX, id);
+							emitFace(out, x, y, z, FaceDir::NX,
+									 (Block::BlockType)id);
 					}
 				}
 			}
@@ -105,7 +111,7 @@ namespace Minecraft {
 		}
 
 		void ChunkMesher::emitFace(MeshData &out, int bx, int by, int bz,
-								   FaceDir dir, Block::BlockID texid) {
+								   FaceDir dir, Block::BlockType texid) {
 			const float *f = faceVerts(dir);
 
 			// Center the templates
@@ -113,16 +119,17 @@ namespace Minecraft {
 			const float oy = (float)by + 0.5f;
 			const float oz = (float)bz + 0.5f;
 
-			unsigned int base = (unsigned int)out.vertices.size();
+			const unsigned int base = (unsigned int)out.vertices.size();
 
-			Block::TexCoord tc = Block::getTexCoord((Block::BlockType)texid);
+			Block::TexCoord tc =
+				Block::getTexCoord((Block::BlockType)texid, dir);
 
-			float u0 = (float)tc.u * TILE_W / ATLAS_W;
-			float u1 = ((float)tc.u + 1.0f) * TILE_W / ATLAS_W;
-			float v0 = 1.0f - ((float)tc.v * TILE_H / ATLAS_H);
-			float v1 = 1.0f - (((float)tc.v + 1.0f) * TILE_H / ATLAS_H);
+			const float u0 = (float)tc.u * TILE_W / ATLAS_W;
+			const float u1 = ((float)tc.u + 1.0f) * TILE_W / ATLAS_W;
+			const float v0 = 1.0f - ((float)tc.v * TILE_H / ATLAS_H);
+			const float v1 = 1.0f - (((float)tc.v + 1.0f) * TILE_H / ATLAS_H);
 
-			float uv[]{
+			float uv[] = {
 				u1, v1, // Top right
 				u1, v0, // Bottom right
 				u0, v0, // Bottom left
@@ -131,9 +138,15 @@ namespace Minecraft {
 
 			for (int i = 0; i < 4; i++) {
 				Vertex v;
-				v.position = {f[3 * i + 0] + ox, f[3 * i + 1] + oy,
+				v.position = {f[3 * i] + ox, f[3 * i + 1] + oy,
 							  f[3 * i + 2] + oz};
-				v.uv = {uv[2 * i + 0], uv[2 * i + 1]};
+				if (dir == FaceDir::NZ || dir == FaceDir::PX) {
+					int idx = (4 - i) % 4;
+					v.uv = {uv[2 * idx], uv[2 * idx + 1]};
+				} else {
+					v.uv = {uv[2 * i], uv[2 * i + 1]};
+				}
+
 				v.texid = texid;
 
 				out.vertices.push_back(v);

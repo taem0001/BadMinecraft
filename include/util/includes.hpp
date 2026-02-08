@@ -10,6 +10,8 @@
 #include <unordered_map>
 #include <utility>
 
+enum class FaceDir { PZ, NZ, PX, NX, PY, NY };
+
 static inline int floorDiv(int a, int b) {
 	int q = a / b;
 	int r = a % b;

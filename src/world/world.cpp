@@ -12,12 +12,16 @@ namespace Minecraft {
 						Perlin::perlin((double)x * freq, 0.0, (double)z * freq);
 					double h0 = 0.5 * (n + 1);
 					int height = (int)std::round(h0 * amp);
-					if (height < 0) height = 0;
-					if (height >= CHUNK_MAX_Y) height = CHUNK_MAX_Y - 1;
-					if (n < 0) {
-						setBlockWorld(x, height, z, Block::DIRT);
-					} else {
-						setBlockWorld(x, height, z, Block::STONE);
+					for (int y = 0; y < CHUNK_MAX_Y; y++) {
+						if (y > height) {
+							setBlockWorld(x, y, z, Block::AIR);
+						} else if (y == height) {
+							setBlockWorld(x, y, z, Block::GRASS);
+						} else if (y > height - 3) {
+							setBlockWorld(x, y, z, Block::DIRT);
+						} else {
+							setBlockWorld(x, y, z, Block::STONE);
+						}
 					}
 				}
 			}
