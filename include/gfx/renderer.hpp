@@ -5,6 +5,7 @@
 #include "../util/includes.hpp"
 #include "../util/macros.hpp"
 #include "../world/world.hpp"
+#include "../world/worldgen.hpp"
 #include "chunkmesh.hpp"
 #include "gfx.hpp"
 #include "shader.hpp"

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <memory>
 #include <unordered_map>
+#include <cstdlib>
 #include <utility>
 
 enum class FaceDir { PZ, NZ, PX, NX, PY, NY };

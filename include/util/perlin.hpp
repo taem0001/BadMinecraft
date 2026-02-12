@@ -48,6 +48,10 @@ namespace Perlin {
 		return a + t * (b - a);
 	}
 
+	double static constexpr invLerp(double a, double b, double t) {
+		return (t - a) / (b - a);
+	}
+
 	double static constexpr fade(double t) {
 		return t * t * t * (t * (t * 6 - 15) + 10);
 	}

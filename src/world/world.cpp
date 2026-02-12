@@ -2,32 +2,7 @@
 
 namespace Minecraft {
 	namespace World {
-		World::World() {
-			const double freq = 0.02;
-			const int amp = 10;
-
-			for (int z = 0; z < CHUNK_MAX_Z * 10; z++) {
-				for (int x = 0; x < CHUNK_MAX_X * 10; x++) {
-					double n =
-						Perlin::perlin((double)x * freq, 0.0, (double)z * freq);
-					double h0 = 0.5 * (n + 1);
-					int height = (int)std::round(h0 * amp);
-					if (height > CHUNK_MAX_Y) height = CHUNK_MAX_Y - 1; 
-					
-					for (int y = 0; y < CHUNK_MAX_Y; y++) {
-						if (y > height) {
-							setBlockWorld(x, y, z, Block::AIR);
-						} else if (y == height) {
-							setBlockWorld(x, y, z, Block::GRASS);
-						} else if (y > height - 3) {
-							setBlockWorld(x, y, z, Block::DIRT);
-						} else {
-							setBlockWorld(x, y, z, Block::STONE);
-						}
-					}
-				}
-			}
-		}
+		World::World() : seed(0) {}
 
 		// Getters / Setters
 		Chunk *World::getChunk(const ChunkCoord &coord) {
@@ -87,6 +62,8 @@ namespace Minecraft {
 			// Get block from chunk
 			return chunk->getLocalBlock(localx, localy, localz);
 		}
+
+		u64 World::getSeed() const { return seed; }
 
 		// World editing functions
 		void World::createChunk(const ChunkCoord &coord) {
