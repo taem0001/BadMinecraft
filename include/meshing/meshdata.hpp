@@ -1,9 +1,7 @@
 #pragma once
 
 #include "../block/block.hpp"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "../util/includes.hpp"
 
 namespace Minecraft {
 	namespace Meshing {

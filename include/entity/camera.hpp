@@ -1,11 +1,9 @@
 #pragma once
 
 #include "../gfx/gfx.hpp"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "../util/types.hpp"
+#include "../util/includes.hpp"
 #include "../util/macros.hpp"
+#include "../util/types.hpp"
 
 namespace Minecraft {
 	namespace Entity {
@@ -13,7 +11,7 @@ namespace Minecraft {
 
 		const double YAW = -90.0;
 		const double PITCH = 0.0f;
-		const double SPEED = 3.5f;
+		const double SPEED = 7.0f;
 		const double SENSITIVITY = 0.1f;
 		const double FOVY = 45.0f;
 		const double NEAR = 0.1f;
@@ -31,11 +29,13 @@ namespace Minecraft {
 				Camera(glm::vec3 = glm::vec3(0.0f, 0.0f, 0.0f),
 					   glm::vec3 = glm::vec3(0.0f, 1.0f, 0.0f), double = YAW,
 					   double = PITCH, double = NEAR, double = FAR);
-				Camera(double, double, double, double, double, double, double, double, double, double);
+				Camera(double, double, double, double, double, double, double,
+					   double, double, double);
 
 				glm::mat4 getViewMat();
 				void processKey(CamMovement, double);
-				void processMouse(double, double, GLboolean = true, GLboolean = false);
+				void processMouse(double, double, GLboolean = true,
+								  GLboolean = false);
 
 			private:
 				void updateCamVects();

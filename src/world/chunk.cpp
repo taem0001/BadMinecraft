@@ -2,52 +2,16 @@
 
 namespace Minecraft {
 	namespace World {
-		void Chunk::init(const ChunkCoord &coord) {
-			this->mesh = std::unique_ptr<GFX::ChunkMesh>(new GFX::ChunkMesh);
-			this->coord = coord;
-			this->dirty = true;
-
-			for (int z = 0; z < CHUNK_MAX_Z; z++) {
-				for (int y = 0; y < CHUNK_MAX_Y; y++) {
-					for (int x = 0; x < CHUNK_MAX_X; x++) {
-						if (index(x, y, z) % 2 == 0) {
-							setBlock(x, y, z, Block::DIRT);
-						} else {
-							setBlock(x, y, z, Block::STONE);
-						}
-					}
-				}
-			}
-
-			std::cout << "[INFO] Chunk generated at: " << this->coord << std::endl;
-		}
-
 		constexpr int Chunk::index(int x, int y, int z) {
 			return x + CHUNK_MAX_X * (y + CHUNK_MAX_Y * z);
 		}
 
-		Block::BlockID Chunk::getBlock(int x, int y, int z) const {
-			return blocks[index(x, y, z)];
+		void Chunk::setLocalBlock(int lx, int ly, int lz, Block::BlockID id) {
+			blocks[index(lx, ly, lz)] = id;
 		}
 
-		void Chunk::setBlock(int x, int y, int z, Block::BlockID blockID) {
-			if (blocks[index(x, y, z)] == blockID) return;
-
-			blocks[index(x, y, z)] = blockID;
-			dirty = true;
-		}
-
-		bool Chunk::isAirLocal(int x, int y, int z) const {
-			if (x < 0 || x >= CHUNK_MAX_X) return false;
-			if (y < 0 || y >= CHUNK_MAX_Y) return false;
-			if (z < 0 || z >= CHUNK_MAX_Z) return false;
-
-			return blocks[index(x, y, z)] == Block::AIR;
-		}
-
-		glm::vec3 Chunk::worldOrigin() const {
-			return {coord.x * CHUNK_MAX_X, coord.y * CHUNK_MAX_Y,
-					coord.z * CHUNK_MAX_Z};
+		Block::BlockID Chunk::getLocalBlock(int lx, int ly, int lz) const {
+			return blocks[index(lx, ly, lz)];
 		}
 	} // namespace World
 } // namespace Minecraft

@@ -2,8 +2,8 @@
 
 #include "gfx/renderer.hpp"
 #include "gfx/window.hpp"
+#include "util/includes.hpp"
 #include "world/world.hpp"
-#include <iostream>
 
 class Game {
 	public:

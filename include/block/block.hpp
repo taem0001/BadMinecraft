@@ -1,21 +1,19 @@
 #pragma once
 
 #include "../util/types.hpp"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "../util/includes.hpp"
 
 namespace Minecraft {
-	namespace Block {
-		using BlockID = u8;
+    namespace Block {
+        using BlockID = u8;
 
-		enum BlockType : BlockID { AIR, DIRT, STONE };
+        enum BlockType : BlockID { AIR, DIRT, STONE, GRASS };
 
-		struct TexCoord {
-				int u;
-				int v;
-		};
+        struct TexCoord {
+                int u;
+                int v;
+        };
 
-		TexCoord getTexCoord(BlockType type);
-	} // namespace Block
+        TexCoord getTexCoord(BlockType type, FaceDir dir);
+    } // namespace Block
 } // namespace Minecraft

@@ -1,8 +1,10 @@
 #pragma once
 
 #include "../gfx/chunkmesh.hpp"
+#include "../util/includes.hpp"
+#include "../util/macros.hpp"
+#include "../util/perlin.hpp"
 #include "chunk.hpp"
-#include <unordered_map>
 
 namespace Minecraft {
 	namespace World {
@@ -10,23 +12,22 @@ namespace Minecraft {
 			public:
 				World();
 
-				Chunk &getChunk(const ChunkCoord &coord) {
-					return chunks.at(coord);
-				}
-				const Chunk &getChunk(const ChunkCoord &coord) const {
-					return chunks.at(coord);
-				}
-				void setBlock(const ChunkCoord &coord, int x, int y, int z,
-							  Block::BlockID id);
-				std::unordered_map<ChunkCoord, Chunk> &getChunks() {
-					return chunks;
-				}
-				const std::unordered_map<ChunkCoord, Chunk> &getChunks() const {
-					return chunks;
-				}
+				Chunk *getChunk(const ChunkCoord &coord);
+				const Chunk *getChunk(const ChunkCoord &coord) const;
+				Chunk &getOrCreateChunk(const ChunkCoord &coord);
+				std::unordered_map<ChunkCoord, Chunk> &getChunks();
+				const std::unordered_map<ChunkCoord, Chunk> &getChunks() const;
+				u64 getSeed() const;
+
+				Block::BlockID getBlockWorld(int x, int y, int z) const;
+				void setBlockWorld(int wx, int wy, int wz, Block::BlockID id);
 
 			private:
+				u64 seed;
 				std::unordered_map<ChunkCoord, Chunk> chunks;
+
+				void createChunk(const ChunkCoord &coord);
+				void markDirtyIfLoaded(const ChunkCoord &coord);
 		};
 	} // namespace World
 } // namespace Minecraft

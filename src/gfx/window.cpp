@@ -1,6 +1,5 @@
 #include "../../include/gfx/window.hpp"
 #include "../../include/gfx/renderer.hpp"
-#include <iostream>
 
 namespace Minecraft {
 	namespace GFX {
@@ -81,7 +80,7 @@ namespace Minecraft {
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				r.updateChunks(w);
-				r.renderWorld(w);
+				r.renderWorld();
 				glfwSwapBuffers(handle);
 			}
 		}

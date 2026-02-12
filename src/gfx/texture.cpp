@@ -1,5 +1,4 @@
 #include "../../include/gfx/texture.hpp"
-#include <iostream>
 
 namespace Minecraft {
 	namespace GFX {

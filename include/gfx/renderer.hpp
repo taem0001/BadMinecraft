@@ -2,14 +2,14 @@
 
 #include "../entity/camera.hpp"
 #include "../meshing/chunkmesher.hpp"
+#include "../util/includes.hpp"
+#include "../util/macros.hpp"
 #include "../world/world.hpp"
+#include "../world/worldgen.hpp"
 #include "chunkmesh.hpp"
 #include "gfx.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 namespace Minecraft {
 	namespace GFX {
@@ -21,7 +21,7 @@ namespace Minecraft {
 				Renderer();
 
 				void updateChunks(World::World &world);
-				void renderWorld(const World::World &world);
+				void renderWorld();
 
 				Entity::Camera &getCam() { return cam; }
 				const Entity::Camera &getCam() const { return cam; }
@@ -32,13 +32,14 @@ namespace Minecraft {
 				}
 
 			private:
+				std::unordered_map<World::ChunkCoord, ChunkMesh> meshes;
 				Entity::Camera cam;
 
 				Shader shader;
 				Texture texture;
 
-				int width;
-				int height;
+				int width, height;
+				double const RENDER_RADIUS;
 		};
 	} // namespace GFX
 } // namespace Minecraft
