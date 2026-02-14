@@ -7,27 +7,29 @@
 #include "chunk.hpp"
 
 namespace Minecraft {
-	namespace World {
-		class World {
-			public:
-				World();
+    namespace World {
+        class World {
+            public:
+                World();
 
-				Chunk *getChunk(const ChunkCoord &coord);
-				const Chunk *getChunk(const ChunkCoord &coord) const;
-				Chunk &getOrCreateChunk(const ChunkCoord &coord);
-				std::unordered_map<ChunkCoord, Chunk> &getChunks();
-				const std::unordered_map<ChunkCoord, Chunk> &getChunks() const;
-				u64 getSeed() const;
+                Chunk *getChunk(const ChunkCoord &coord);
+                const Chunk *getChunk(const ChunkCoord &coord) const;
+                Chunk &getOrCreateChunk(const ChunkCoord &coord);
+                std::unordered_map<ChunkCoord, Chunk> &getChunks();
+                const std::unordered_map<ChunkCoord, Chunk> &getChunks() const;
+                u64 getSeed() const;
 
-				Block::BlockID getBlockWorld(int x, int y, int z) const;
-				void setBlockWorld(int wx, int wy, int wz, Block::BlockID id);
+                Block::BlockID getBlockWorld(int x, int y, int z) const;
+                void setBlockWorld(int wx, int wy, int wz, Block::BlockID id);
 
-			private:
-				u64 seed;
-				std::unordered_map<ChunkCoord, Chunk> chunks;
+                bool containsChunk(const ChunkCoord &coord);
 
-				void createChunk(const ChunkCoord &coord);
-				void markDirtyIfLoaded(const ChunkCoord &coord);
-		};
-	} // namespace World
+            private:
+                u64 seed;
+                std::unordered_map<ChunkCoord, Chunk> chunks;
+
+                void createChunk(const ChunkCoord &coord);
+                void markDirtyIfLoaded(const ChunkCoord &coord);
+        };
+    } // namespace World
 } // namespace Minecraft

@@ -11,6 +11,9 @@
 #include <cstdlib>
 #include <utility>
 
+#define WIDTH  1280
+#define HEIGHT 720
+
 enum class FaceDir { PZ, NZ, PX, NX, PY, NY };
 
 static inline int floorDiv(int a, int b) {

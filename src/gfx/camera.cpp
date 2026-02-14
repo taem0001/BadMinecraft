@@ -1,7 +1,7 @@
-#include "../../include/entity/camera.hpp"
+#include "../../include/gfx/camera.hpp"
 
 namespace Minecraft {
-	namespace Entity {
+	namespace GFX {
 		Camera::Camera(glm::vec3 p, glm::vec3 u, double y, double pi, double n,
 					   double f)
 			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED),
@@ -90,5 +90,13 @@ namespace Minecraft {
 			right = glm::normalize(glm::cross(front, worldup));
 			up = glm::normalize(glm::cross(right, front));
 		}
+
+		// void Camera::updateFrustum() {
+		// 	const double halfVSide = far * std::tanf(fovy * 0.5);
+		// 	const double halfHSide = halfVSide * (WIDTH / HEIGHT);
+		// 	const glm::vec3 frontMultFar = (float)far * front;
+
+		// 	frustum.nearFace = {pos + (float)near * front, front};
+		// }
 	} // namespace Entity
 } // namespace Minecraft

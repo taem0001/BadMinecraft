@@ -67,10 +67,13 @@ namespace Minecraft {
 		}
 
 		void Window::windowLoop(Renderer &r, World::World &w) {
+			u64 frames = 0;
+			double start = glfwGetTime();
 			while (!glfwWindowShouldClose(handle)) {
 				double currentframe = glfwGetTime();
 				deltatime = currentframe - lastframe;
 				lastframe = currentframe;
+				frames++;
 
 				glfwPollEvents();
 				processInput(r);
@@ -83,6 +86,9 @@ namespace Minecraft {
 				r.renderWorld();
 				glfwSwapBuffers(handle);
 			}
+			double spent = glfwGetTime() - start;
+			double avgFPS = frames / spent;
+			std::cout << "[INFO] Avg. FPS: " << avgFPS << std::endl;
 		}
 
 		Window::~Window() {
@@ -91,7 +97,7 @@ namespace Minecraft {
 		}
 
 		void Window::processMouse(Renderer &r) {
-			Entity::Camera &cam = r.getCam();
+			Camera &cam = r.getCam();
 
 			static double lastx = WIDTH / 2.0f;
 			static double lasty = HEIGHT / 2.0f;
@@ -117,20 +123,20 @@ namespace Minecraft {
 		}
 
 		void Window::processInput(Renderer &r) {
-			Entity::Camera &cam = r.getCam();
+			Camera &cam = r.getCam();
 
 			if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
-				cam.processKey(Entity::FORWARD, deltatime);
+				cam.processKey(FORWARD, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS)
-				cam.processKey(Entity::BACKWARD, deltatime);
+				cam.processKey(BACKWARD, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS)
-				cam.processKey(Entity::LEFT, deltatime);
+				cam.processKey(LEFT, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS)
-				cam.processKey(Entity::RIGHT, deltatime);
+				cam.processKey(RIGHT, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS)
-				cam.processKey(Entity::UP, deltatime);
+				cam.processKey(UP, deltatime);
 			if (glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-				cam.processKey(Entity::DOWN, deltatime);
+				cam.processKey(DOWN, deltatime);
 		}
 	} // namespace GFX
 } // namespace Minecraft

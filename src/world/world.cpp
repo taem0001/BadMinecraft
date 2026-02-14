@@ -47,7 +47,6 @@ namespace Minecraft {
 		Block::BlockID World::getBlockWorld(int wx, int wy, int wz) const {
 			// Find chunk with world coordinates
 			ChunkCoord coord = {floorDiv(wx, CHUNK_MAX_X),
-								floorDiv(wy, CHUNK_MAX_Y),
 								floorDiv(wz, CHUNK_MAX_Z)};
 			const Chunk *chunk = getChunk(coord);
 
@@ -65,6 +64,10 @@ namespace Minecraft {
 
 		u64 World::getSeed() const { return seed; }
 
+		bool World::containsChunk(const ChunkCoord &coord) {
+			return chunks.contains(coord);
+		}
+
 		// World editing functions
 		void World::createChunk(const ChunkCoord &coord) {
 			auto [it, inserted] = chunks.try_emplace(coord);
@@ -74,20 +77,19 @@ namespace Minecraft {
 				c.dirty = true;
 				c.blocks.fill(Block::AIR);
 
-				markDirtyIfLoaded(coord + (ChunkCoord){-1, 0, 0});
-				markDirtyIfLoaded(coord + (ChunkCoord){1, 0, 0});
-				markDirtyIfLoaded(coord + (ChunkCoord){0, 0, -1});
-				markDirtyIfLoaded(coord + (ChunkCoord){0, 0, 1});
+				markDirtyIfLoaded(coord + (ChunkCoord){-1, 0});
+				markDirtyIfLoaded(coord + (ChunkCoord){1, 0});
+				markDirtyIfLoaded(coord + (ChunkCoord){0, -1});
+				markDirtyIfLoaded(coord + (ChunkCoord){0, 1});
 
-				std::cout << "[INFO] Created chunk at " << coord << "."
-						  << std::endl;
+				// std::cout << "[INFO] Created chunk at " << coord << "."
+				// 		  << std::endl;
 			}
 		}
 
 		void World::setBlockWorld(int wx, int wy, int wz, Block::BlockID id) {
 			// Define the chunk coordinates and get the chunk
 			ChunkCoord coord = {floorDiv(wx, CHUNK_MAX_X),
-								floorDiv(wy, CHUNK_MAX_Y),
 								floorDiv(wz, CHUNK_MAX_Z)};
 			Chunk &chunk = getOrCreateChunk(coord);
 
@@ -97,12 +99,12 @@ namespace Minecraft {
 			int localz = floorMod(wz, CHUNK_MAX_Z);
 
 			// Mark neighboring chunk dirty if at chunk border
-			if (localx == 0) markDirtyIfLoaded(coord + (ChunkCoord){-1, 0, 0});
+			if (localx == 0) markDirtyIfLoaded(coord + (ChunkCoord){-1, 0});
 			if (localx == CHUNK_MAX_X - 1)
-				markDirtyIfLoaded(coord + (ChunkCoord){1, 0, 0});
-			if (localz == 0) markDirtyIfLoaded(coord + (ChunkCoord){0, 0, -1});
+				markDirtyIfLoaded(coord + (ChunkCoord){1, 0});
+			if (localz == 0) markDirtyIfLoaded(coord + (ChunkCoord){0, -1});
 			if (localz == CHUNK_MAX_Z - 1)
-				markDirtyIfLoaded(coord + (ChunkCoord){0, 0, 1});
+				markDirtyIfLoaded(coord + (ChunkCoord){0, 1});
 
 			// Place block at the coordinates
 			chunk.setLocalBlock(localx, localy, localz, id);

@@ -11,7 +11,7 @@ namespace Minecraft {
 
 		class WorldGen {
 			public:
-				static void chunkGen(int playerX, int playerZ, SetQuery query, u64 seed);
+				static void chunkGen(const ChunkCoord &playerChunk, SetQuery query, u64 seed);
 
 			private:
 		};

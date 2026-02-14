@@ -6,8 +6,22 @@
 #include "../util/types.hpp"
 
 namespace Minecraft {
-	namespace Entity {
+	namespace GFX {
 		enum CamMovement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
+
+		struct Plane {
+				glm::vec3 normal = {0, 1, 0};
+				double distance = 0.0;
+		};
+
+		struct Frustum {
+				Plane topFace;
+				Plane bottomFace;
+				Plane rightFace;
+				Plane leftFace;
+				Plane farFace;
+				Plane nearFace;
+		};
 
 		const double YAW = -90.0;
 		const double PITCH = 0.0f;
@@ -38,7 +52,10 @@ namespace Minecraft {
 								  GLboolean = false);
 
 			private:
+				// Frustum frustum;
+
+				void updateFrustum();
 				void updateCamVects();
 		};
-	} // namespace Entity
+	} // namespace GFX
 } // namespace Minecraft

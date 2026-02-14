@@ -2,11 +2,11 @@
 
 namespace Minecraft {
     namespace World {
-        void WorldGen::chunkGen(int playerX, int playerZ, SetQuery query,
+        void WorldGen::chunkGen(const ChunkCoord &playerChunk, SetQuery query,
                                 u64 seed) {
             std::srand(seed);
 
-            const double scale = 59.0, persistance = 0.2, lacunarity = 1.7;
+            const double scale = 59.0, persistance = 0.5, lacunarity = 1.7;
             const int octaves = 4;
 
             std::array<std::array<double, 2>, octaves> octaveOffsets;
@@ -19,13 +19,12 @@ namespace Minecraft {
                 octaveOffsets[i][1] = offsetZ;
             }
 
-            int cx = floorDiv(playerX, CHUNK_MAX_X);
-            int cz = floorDiv(playerZ, CHUNK_MAX_Z);
+            // std::cout << "[INFO] Generating chunk at: (" << cx << "; 0; " << cz << ")" << std::endl;
             
             for (int lx = 0; lx < CHUNK_MAX_X; lx++) {
                 for (int lz = 0; lz < CHUNK_MAX_Z; lz++) {
-                    int wx = cx * CHUNK_MAX_X + lx;
-                    int wz = cz * CHUNK_MAX_Z + lz;
+                    int wx = playerChunk.x * CHUNK_MAX_X + lx;
+                    int wz = playerChunk.z * CHUNK_MAX_Z + lz;
 
                     double freq = 1;
                     double amp = 1;
@@ -43,9 +42,8 @@ namespace Minecraft {
                     noiseH = (noiseH < 0) ? std::fmod(std::abs(noiseH), 1.0) : std::fmod(noiseH, 1.0);
                     noiseH *= CHUNK_MAX_Y;
                     int height = std::round(noiseH);
-                    if (height == 0) height = 1; // TODO: This is a temporary fix until negative y coordinates are allowed
 
-                    for (int y = 0; y < height; y++) {
+                    for (int y = 0; y <= height; y++) {
                         if (y == height - 1) {
                             query(wx, y, wz, Block::GRASS);
                         } else if (y > height - 3) {
