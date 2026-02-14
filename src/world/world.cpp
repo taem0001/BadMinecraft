@@ -2,7 +2,8 @@
 
 namespace Minecraft {
 	namespace World {
-		World::World() : seed(0) {}
+		World::World(u64 s) : seed(s), gen(WorldGen(s, 4, 50.0, 0.35, 2.3)) {
+		}
 
 		// Getters / Setters
 		Chunk *World::getChunk(const ChunkCoord &coord) {
@@ -63,6 +64,14 @@ namespace Minecraft {
 		}
 
 		u64 World::getSeed() const { return seed; }
+
+		const WorldGen &World::getWorldGen() const {
+			return gen;
+		}
+
+		WorldGen &World::getWorldGen() {
+			return gen;
+		}
 
 		bool World::containsChunk(const ChunkCoord &coord) {
 			return chunks.contains(coord);
