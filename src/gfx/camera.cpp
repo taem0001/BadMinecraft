@@ -1,7 +1,7 @@
-#include "../../include/entity/camera.hpp"
+#include "../../include/gfx/camera.hpp"
 
 namespace Minecraft {
-	namespace Entity {
+	namespace GFX {
 		Camera::Camera(glm::vec3 p, glm::vec3 u, double y, double pi, double n,
 					   double f)
 			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED),
@@ -33,6 +33,12 @@ namespace Minecraft {
 			return glm::lookAt(pos, pos + front, up);
 		}
 
+		glm::mat4 Camera::getProjMat(int width, int height) {
+			return glm::perspective(glm::radians((float)fovy),
+									(float)width / (float)height, (float)near,
+									(float)far);
+		}
+
 		void Camera::processKey(CamMovement move, double deltatime) {
 			double vel = movespeed * deltatime;
 			switch (move) {
@@ -59,23 +65,20 @@ namespace Minecraft {
 		}
 
 		void Camera::processMouse(double xoffset, double yoffset,
-								  GLboolean constrainpitch, GLboolean constrainyaw) {
+								  GLboolean constrainpitch,
+								  GLboolean constrainyaw) {
 			xoffset *= mousesens;
 			yoffset *= mousesens;
 			yaw += xoffset;
 			pitch += yoffset;
 
 			if (constrainpitch) {
-				if (pitch > 89.0f)
-					pitch = 89.0f;
-				if (pitch < -89.0f)
-					pitch = -89.0f;
+				if (pitch > 89.0f) pitch = 89.0f;
+				if (pitch < -89.0f) pitch = -89.0f;
 			}
 			if (constrainyaw) {
-				if (yaw > 89.0f) 
-					yaw = 89.0f;
-				if (yaw < -89.0f)
-					yaw = -89.0f;
+				if (yaw > 89.0f) yaw = 89.0f;
+				if (yaw < -89.0f) yaw = -89.0f;
 			}
 
 			updateCamVects();
@@ -90,5 +93,5 @@ namespace Minecraft {
 			right = glm::normalize(glm::cross(front, worldup));
 			up = glm::normalize(glm::cross(right, front));
 		}
-	} // namespace Entity
+	} // namespace GFX
 } // namespace Minecraft

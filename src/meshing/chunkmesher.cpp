@@ -3,8 +3,8 @@
 namespace Minecraft {
 	namespace Meshing {
 		static constexpr int SX = CHUNK_MAX_X;
-		static constexpr int SY = CHUNK_MAX_Y;
 		static constexpr int SZ = CHUNK_MAX_Z;
+		static constexpr int SY = CHUNK_MAX_Y;
 		static constexpr int ATLAS_W = 32;
 		static constexpr int ATLAS_H = 32;
 		static constexpr int TILE_W = 16;
@@ -72,7 +72,6 @@ namespace Minecraft {
 			out.indices.clear();
 
 			const int baseX = chunk.coord.x * SX;
-			const int baseY = chunk.coord.y * SY;
 			const int baseZ = chunk.coord.z * SZ;
 
 			for (int z = 0; z < SZ; z++) {
@@ -82,7 +81,7 @@ namespace Minecraft {
 						if (id == Block::AIR) continue;
 
 						int wx = x + baseX;
-						int wy = y + baseY;
+						int wy = y;
 						int wz = z + baseZ;
 
 						if (isAir(query, wx, wy, wz + 1))

@@ -6,7 +6,7 @@
 #include "../util/types.hpp"
 
 namespace Minecraft {
-	namespace Entity {
+	namespace GFX {
 		enum CamMovement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 
 		const double YAW = -90.0;
@@ -33,6 +33,7 @@ namespace Minecraft {
 					   double, double, double);
 
 				glm::mat4 getViewMat();
+				glm::mat4 getProjMat(int width, int height);
 				void processKey(CamMovement, double);
 				void processMouse(double, double, GLboolean = true,
 								  GLboolean = false);
@@ -40,5 +41,5 @@ namespace Minecraft {
 			private:
 				void updateCamVects();
 		};
-	} // namespace Entity
+	} // namespace GFX
 } // namespace Minecraft

@@ -7,7 +7,7 @@
 
 class Game {
 	public:
-		Game() : window(), renderer(), world() {}
+		Game() : window(), renderer(), world(23598523) {}
 
 		void runGame() {
 			std::cout << "[INFO] Starting game." << std::endl;

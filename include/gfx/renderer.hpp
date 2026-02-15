@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../entity/camera.hpp"
 #include "../meshing/chunkmesher.hpp"
 #include "../util/includes.hpp"
 #include "../util/macros.hpp"
 #include "../world/world.hpp"
 #include "../world/worldgen.hpp"
+#include "camera.hpp"
 #include "chunkmesh.hpp"
 #include "gfx.hpp"
 #include "shader.hpp"
@@ -13,8 +13,19 @@
 
 namespace Minecraft {
 	namespace GFX {
-#define WIDTH  1280
-#define HEIGHT 720
+		struct Plane {
+				glm::vec3 normal = {0, 1, 0};
+				float distance = 0.0;
+		};
+
+		struct Frustum {
+				Plane p[6];
+		};
+
+		struct aabb {
+				glm::vec3 mn;
+				glm::vec3 mx;
+		};
 
 		class Renderer {
 			public:
@@ -23,8 +34,8 @@ namespace Minecraft {
 				void updateChunks(World::World &world);
 				void renderWorld();
 
-				Entity::Camera &getCam() { return cam; }
-				const Entity::Camera &getCam() const { return cam; }
+				Camera &getCam() { return cam; }
+				const Camera &getCam() const { return cam; }
 
 				void setViewPortSize(int w, int h) {
 					this->width = w;
@@ -33,13 +44,20 @@ namespace Minecraft {
 
 			private:
 				std::unordered_map<World::ChunkCoord, ChunkMesh> meshes;
-				Entity::Camera cam;
+				Camera cam;
 
 				Shader shader;
 				Texture texture;
 
 				int width, height;
 				double const RENDER_RADIUS;
+
+				Plane normalizePlane(const glm::vec4 &v);
+				Frustum getFrustum();
+				aabb getAABB(const World::ChunkCoord &coord);
+
+				bool aabbOutsidePlane(const aabb &b, const Plane& p);
+				bool aabbInFrustum(const aabb &b, const Frustum &f);
 		};
 	} // namespace GFX
 } // namespace Minecraft
