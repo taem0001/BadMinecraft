@@ -33,6 +33,12 @@ namespace Minecraft {
 			return glm::lookAt(pos, pos + front, up);
 		}
 
+		glm::mat4 Camera::getProjMat(int width, int height) {
+			return glm::perspective(glm::radians((float)fovy),
+									(float)width / (float)height, (float)near,
+									(float)far);
+		}
+
 		void Camera::processKey(CamMovement move, double deltatime) {
 			double vel = movespeed * deltatime;
 			switch (move) {
@@ -59,23 +65,20 @@ namespace Minecraft {
 		}
 
 		void Camera::processMouse(double xoffset, double yoffset,
-								  GLboolean constrainpitch, GLboolean constrainyaw) {
+								  GLboolean constrainpitch,
+								  GLboolean constrainyaw) {
 			xoffset *= mousesens;
 			yoffset *= mousesens;
 			yaw += xoffset;
 			pitch += yoffset;
 
 			if (constrainpitch) {
-				if (pitch > 89.0f)
-					pitch = 89.0f;
-				if (pitch < -89.0f)
-					pitch = -89.0f;
+				if (pitch > 89.0f) pitch = 89.0f;
+				if (pitch < -89.0f) pitch = -89.0f;
 			}
 			if (constrainyaw) {
-				if (yaw > 89.0f) 
-					yaw = 89.0f;
-				if (yaw < -89.0f)
-					yaw = -89.0f;
+				if (yaw > 89.0f) yaw = 89.0f;
+				if (yaw < -89.0f) yaw = -89.0f;
 			}
 
 			updateCamVects();
@@ -90,13 +93,5 @@ namespace Minecraft {
 			right = glm::normalize(glm::cross(front, worldup));
 			up = glm::normalize(glm::cross(right, front));
 		}
-
-		// void Camera::updateFrustum() {
-		// 	const double halfVSide = far * std::tanf(fovy * 0.5);
-		// 	const double halfHSide = halfVSide * (WIDTH / HEIGHT);
-		// 	const glm::vec3 frontMultFar = (float)far * front;
-
-		// 	frustum.nearFace = {pos + (float)near * front, front};
-		// }
-	} // namespace Entity
+	} // namespace GFX
 } // namespace Minecraft

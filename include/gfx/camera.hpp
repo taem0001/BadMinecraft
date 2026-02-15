@@ -9,20 +9,6 @@ namespace Minecraft {
 	namespace GFX {
 		enum CamMovement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 
-		struct Plane {
-				glm::vec3 normal = {0, 1, 0};
-				double distance = 0.0;
-		};
-
-		struct Frustum {
-				Plane topFace;
-				Plane bottomFace;
-				Plane rightFace;
-				Plane leftFace;
-				Plane farFace;
-				Plane nearFace;
-		};
-
 		const double YAW = -90.0;
 		const double PITCH = 0.0f;
 		const double SPEED = 7.0f;
@@ -47,14 +33,12 @@ namespace Minecraft {
 					   double, double, double);
 
 				glm::mat4 getViewMat();
+				glm::mat4 getProjMat(int width, int height);
 				void processKey(CamMovement, double);
 				void processMouse(double, double, GLboolean = true,
 								  GLboolean = false);
 
 			private:
-				// Frustum frustum;
-
-				void updateFrustum();
 				void updateCamVects();
 		};
 	} // namespace GFX

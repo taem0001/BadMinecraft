@@ -12,31 +12,52 @@
 #include "texture.hpp"
 
 namespace Minecraft {
-    namespace GFX {
-        class Renderer {
-            public:
-                Renderer();
+	namespace GFX {
+		struct Plane {
+				glm::vec3 normal = {0, 1, 0};
+				float distance = 0.0;
+		};
 
-                void updateChunks(World::World &world);
-                void renderWorld();
+		struct Frustum {
+				Plane p[6];
+		};
 
-                Camera &getCam() { return cam; }
-                const Camera &getCam() const { return cam; }
+		struct aabb {
+				glm::vec3 mn;
+				glm::vec3 mx;
+		};
 
-                void setViewPortSize(int w, int h) {
-                    this->width = w;
-                    this->height = h;
-                }
+		class Renderer {
+			public:
+				Renderer();
 
-            private:
-                std::unordered_map<World::ChunkCoord, ChunkMesh> meshes;
-                Camera cam;
+				void updateChunks(World::World &world);
+				void renderWorld();
 
-                Shader shader;
-                Texture texture;
+				Camera &getCam() { return cam; }
+				const Camera &getCam() const { return cam; }
 
-                int width, height;
-                double const RENDER_RADIUS;
-        };
-    } // namespace GFX
+				void setViewPortSize(int w, int h) {
+					this->width = w;
+					this->height = h;
+				}
+
+			private:
+				std::unordered_map<World::ChunkCoord, ChunkMesh> meshes;
+				Camera cam;
+
+				Shader shader;
+				Texture texture;
+
+				int width, height;
+				double const RENDER_RADIUS;
+
+				Plane normalizePlane(const glm::vec4 &v);
+				Frustum getFrustum();
+				aabb getAABB(const World::ChunkCoord &coord);
+
+				bool aabbOutsidePlane(const aabb &b, const Plane& p);
+				bool aabbInFrustum(const aabb &b, const Frustum &f);
+		};
+	} // namespace GFX
 } // namespace Minecraft
