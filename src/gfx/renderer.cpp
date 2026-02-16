@@ -35,19 +35,19 @@ namespace Minecraft {
                 }
             }
 
-            auto &chunks = w.getChunks();
-            for (auto it = chunks.begin(); it != chunks.end(); it++) {
-                double dist = EUCLDIST(playerChunk, it->first);
-                auto &chunk = it->second;
-                if (!chunk.dirty || dist >= RENDER_RADIUS) continue;
+            auto chunks = w.getChunkSnapshot();
+            for (auto it : chunks) {
+                double dist = EUCLDIST(playerChunk, it.first);
+				World::ChunkPtr chunk = it.second;
+                if (!chunk->dirty || dist >= RENDER_RADIUS) continue;
 
                 Meshing::MeshData cpu =
                     Meshing::ChunkMesher::build(chunk, blockQuery);
 
-                auto [mit, inserted] = meshes.try_emplace(it->first);
+                auto [mit, inserted] = meshes.try_emplace(it.first);
                 mit->second.upload(cpu);
 
-                chunk.dirty = false;
+                chunk->dirty = false;
             }
         }
 

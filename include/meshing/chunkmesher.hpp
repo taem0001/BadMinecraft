@@ -12,7 +12,7 @@ namespace Minecraft {
 
 		class ChunkMesher {
 			public:
-				static MeshData build(const World::Chunk &chunk,
+				static MeshData build(std::shared_ptr<const World::Chunk> chunk,
 									  const BlockQuery &query);
 
 			private:

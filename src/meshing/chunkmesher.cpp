@@ -65,19 +65,19 @@ namespace Minecraft {
 			return query(x, y, z) == Block::AIR;
 		}
 
-		MeshData ChunkMesher::build(const World::Chunk &chunk,
+		MeshData ChunkMesher::build(std::shared_ptr<const World::Chunk> chunk,
 									const BlockQuery &query) {
 			MeshData out;
 			out.vertices.clear();
 			out.indices.clear();
 
-			const int baseX = chunk.coord.x * SX;
-			const int baseZ = chunk.coord.z * SZ;
+			const int baseX = chunk->coord.x * SX;
+			const int baseZ = chunk->coord.z * SZ;
 
 			for (int z = 0; z < SZ; z++) {
 				for (int y = 0; y < SY; y++) {
 					for (int x = 0; x < SX; x++) {
-						Block::BlockID id = chunk.getLocalBlock(x, y, z);
+						Block::BlockID id = chunk->getLocalBlock(x, y, z);
 						if (id == Block::AIR) continue;
 
 						int wx = x + baseX;

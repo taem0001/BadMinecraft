@@ -9,16 +9,23 @@
 
 namespace Minecraft {
 	namespace World {
+		using ChunkPtr = std::shared_ptr<Chunk>;
+		using ChunkMap = std::unordered_map<ChunkCoord, ChunkPtr>;
+		using ChunkSnapshot = std::vector<std::pair<ChunkCoord, ChunkPtr>>;
+
 		class World {
 			public:
 				World(u64 seed);
 
-				Chunk *getChunk(const ChunkCoord &coord);
-				const Chunk *getChunk(const ChunkCoord &coord) const;
-				Chunk &getOrCreateChunk(const ChunkCoord &coord);
-				std::unordered_map<ChunkCoord, Chunk> &getChunks();
-				const std::unordered_map<ChunkCoord, Chunk> &getChunks() const;
+				ChunkPtr getChunk(const ChunkCoord &coord);
+				std::shared_ptr<const Chunk> getChunk(const ChunkCoord &coord) const;
+
+				ChunkPtr getOrCreateChunk(const ChunkCoord &coord);
+
+				ChunkSnapshot getChunkSnapshot() const;
+
 				u64 getSeed() const;
+
                 const WorldGen &getWorldGen() const;
                 WorldGen &getWorldGen();
 
@@ -29,7 +36,7 @@ namespace Minecraft {
 
 			private:
 				u64 seed;
-				std::unordered_map<ChunkCoord, Chunk> chunks;
+				ChunkMap chunks;
                 WorldGen gen;
 
 				void createChunk(const ChunkCoord &coord);

@@ -2,44 +2,42 @@
 
 namespace Minecraft {
 	namespace World {
-		World::World(u64 s) : seed(s), gen(WorldGen(s, 4, 50.0, 0.35, 2.3)) {
-		}
+		World::World(u64 s) : seed(s), gen(WorldGen(s, 4, 50.0, 0.35, 2.3)) {}
 
 		// Getters / Setters
-		Chunk *World::getChunk(const ChunkCoord &coord) {
-			// If chunk exists, return pointer, otherwise null
+		ChunkPtr World::getChunk(const ChunkCoord &coord) {
 			auto it = chunks.find(coord);
 			if (it == chunks.end()) return nullptr;
-			return &it->second;
+			return it->second;
 		}
 
-		const Chunk *World::getChunk(const ChunkCoord &coord) const {
-			// If chunk exists, return pointer, otherwise null
+		std::shared_ptr<const Chunk>
+		World::getChunk(const ChunkCoord &coord) const {
 			auto it = chunks.find(coord);
 			if (it == chunks.end()) return nullptr;
-			return &it->second;
+			return it->second;
 		}
 
-		Chunk &World::getOrCreateChunk(const ChunkCoord &coord) {
-			Chunk *chunkptr = getChunk(coord);
-			// If chunk does not exist, then create it
-			if (chunkptr == nullptr) {
+		ChunkPtr World::getOrCreateChunk(const ChunkCoord &coord) {
+			ChunkPtr c = getChunk(coord);
+			if (c == nullptr) {
 				createChunk(coord);
-				return chunks.at(coord);
+				return getChunk(coord);
 			}
-			return *chunkptr;
+			return c;
 		}
 
-		std::unordered_map<ChunkCoord, Chunk> &World::getChunks() {
-			return chunks;
-		}
-
-		const std::unordered_map<ChunkCoord, Chunk> &World::getChunks() const {
-			return chunks;
+		ChunkSnapshot World::getChunkSnapshot() const {
+			ChunkSnapshot res;
+			res.reserve(chunks.size());
+			for (auto &[coord, cptr] : chunks) {
+				res.push_back({coord, cptr});
+			}
+			return res;
 		}
 
 		void World::markDirtyIfLoaded(const ChunkCoord &coord) {
-			Chunk *c = getChunk(coord);
+			ChunkPtr c = getChunk(coord);
 			if (c != nullptr) {
 				c->dirty = true;
 			}
@@ -49,7 +47,7 @@ namespace Minecraft {
 			// Find chunk with world coordinates
 			ChunkCoord coord = {floorDiv(wx, CHUNK_MAX_X),
 								floorDiv(wz, CHUNK_MAX_Z)};
-			const Chunk *chunk = getChunk(coord);
+			const std::shared_ptr<const Chunk> chunk = getChunk(coord);
 
 			// If chunk doesn't exist, then return air
 			if (chunk == nullptr) return Block::AIR;
@@ -65,13 +63,9 @@ namespace Minecraft {
 
 		u64 World::getSeed() const { return seed; }
 
-		const WorldGen &World::getWorldGen() const {
-			return gen;
-		}
+		const WorldGen &World::getWorldGen() const { return gen; }
 
-		WorldGen &World::getWorldGen() {
-			return gen;
-		}
+		WorldGen &World::getWorldGen() { return gen; }
 
 		bool World::containsChunk(const ChunkCoord &coord) {
 			return chunks.contains(coord);
@@ -79,12 +73,13 @@ namespace Minecraft {
 
 		// World editing functions
 		void World::createChunk(const ChunkCoord &coord) {
-			auto [it, inserted] = chunks.try_emplace(coord);
-			Chunk &c = it->second;
+			ChunkPtr chunk = std::make_shared<Chunk>(coord);
+			auto [it, inserted] = chunks.try_emplace(coord, chunk);
+			ChunkPtr c = it->second;
 			if (inserted) {
-				c.coord = coord;
-				c.dirty = true;
-				c.blocks.fill(Block::AIR);
+				c->coord = coord;
+				c->dirty = true;
+				c->blocks.fill(Block::AIR);
 
 				markDirtyIfLoaded(coord + (ChunkCoord){-1, 0});
 				markDirtyIfLoaded(coord + (ChunkCoord){1, 0});
@@ -100,7 +95,7 @@ namespace Minecraft {
 			// Define the chunk coordinates and get the chunk
 			ChunkCoord coord = {floorDiv(wx, CHUNK_MAX_X),
 								floorDiv(wz, CHUNK_MAX_Z)};
-			Chunk &chunk = getOrCreateChunk(coord);
+			ChunkPtr chunk = getOrCreateChunk(coord);
 
 			// Convert world coordinates to local chunk coordinates
 			int localx = floorMod(wx, CHUNK_MAX_X);
@@ -116,8 +111,8 @@ namespace Minecraft {
 				markDirtyIfLoaded(coord + (ChunkCoord){0, 1});
 
 			// Place block at the coordinates
-			chunk.setLocalBlock(localx, localy, localz, id);
-			chunk.dirty = true;
+			chunk->setLocalBlock(localx, localy, localz, id);
+			chunk->dirty = true;
 		}
 	} // namespace World
 } // namespace Minecraft
