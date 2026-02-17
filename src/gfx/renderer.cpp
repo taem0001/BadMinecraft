@@ -4,7 +4,9 @@ namespace Minecraft {
 	namespace GFX {
 		Renderer::Renderer()
 			: cam(Camera(glm::vec3(0.0f, 70.0f, 0.0f))), width(WIDTH),
-			  height(HEIGHT), RENDER_RADIUS(SQUARE(3)), UPDATE_RADIUS(5) {
+			  height(HEIGHT), RENDER_RADIUS(3), UPDATE_RADIUS(5),
+			  RENDER_RADIUS_SQ(SQUARE(RENDER_RADIUS)),
+			  UPDATE_RADIUS_SQ(SQUARE(UPDATE_RADIUS)) {
 			shader.init("res/shaders/block.vert", "res/shaders/block.frag");
 			texture.init("res/textures/blockatlas.png");
 		}
@@ -21,39 +23,45 @@ namespace Minecraft {
 			World::ChunkCoord playerChunk = {floorDiv(cam.pos[0], CHUNK_MAX_X),
 											 floorDiv(cam.pos[2], CHUNK_MAX_Z)};
 
-			std::array<World::ChunkCoord, 9> coords{{{0, 0},
-													 {1, 0},
-													 {-1, 0},
-													 {0, 1},
-													 {0, -1},
-													 {1, 1},
-													 {1, -1},
-													 {-1, 1},
-													 {-1, -1}}};
-
 			World::WorldGen &gen = w.getWorldGen();
 
-			for (unsigned int i = 0; i < coords.size(); i++) {
-				World::ChunkCoord coord = coords[i] + playerChunk;
+			const CoordList wantedCoords = computeWantedCoords(playerChunk);
+			const CoordList genJobs = requestMissingChunks(w, wantedCoords);
 
-				if (!w.containsChunk(coord)) {
-					gen.chunkGen(coord, setQuery);
-				}
+			for (World::ChunkCoord cc : genJobs) {
+				gen.chunkGen(cc, setQuery);
 			}
 
-			auto chunks = w.getChunkSnapshot();
-			for (auto it : chunks) {
-				double dist = EUCLDIST(playerChunk, it.first);
-				World::ChunkPtr chunk = it.second;
-				if (!chunk->dirty || dist >= RENDER_RADIUS) continue;
+			const CoordList meshJobs =
+				enqueDirtyChunksForMeshing(w, playerChunk);
 
+			MeshList uploadJobs;
+			uploadJobs.reserve(meshJobs.size());
+
+			for (World::ChunkCoord cc : meshJobs) {
+				World::ChunkPtr chunk = w.getChunk(cc);
 				Meshing::MeshData cpu =
 					Meshing::ChunkMesher::build(chunk, blockQuery);
+				uploadJobs.push_back({cc, std::move(cpu)});
+			}
 
-				auto [mit, inserted] = meshes.try_emplace(it.first);
-				mit->second.upload(cpu);
-
+			for (auto &it : uploadJobs) {
+				World::ChunkCoord cc = it.first;
+				World::ChunkPtr chunk = w.getChunk(cc);
+				auto [mit, inserted] = meshes.try_emplace(cc);
+				mit->second.upload(it.second);
 				chunk->dirty = false;
+			}
+
+			for (auto it = meshes.begin(); it != meshes.end();) {
+				World::ChunkCoord cc = it->first;
+				double dist = EUCLDISTSQ(cc, playerChunk);
+				if (dist > UPDATE_RADIUS_SQ) {
+					it = meshes.erase(it);
+					w.destroyChunk(cc);
+				} else {
+					it++;
+				}
 			}
 		}
 
@@ -78,8 +86,8 @@ namespace Minecraft {
 				aabb b = getAABB(coord);
 				if (!aabbInFrustum(b, f)) continue;
 
-				double dist = EUCLDIST(playerChunk, coord);
-				if (dist >= RENDER_RADIUS) continue;
+				double dist = EUCLDISTSQ(playerChunk, coord);
+				if (dist > RENDER_RADIUS_SQ) continue;
 
 				glm::mat4 model =
 					glm::translate(glm::mat4(1.0f), coord.worldOrigin());
@@ -142,16 +150,25 @@ namespace Minecraft {
 		const CoordList
 		Renderer::computeWantedCoords(const World::ChunkCoord &coord) const {
 			CoordList res;
-			int cap = (SQUARE(UPDATE_RADIUS * 2 + 1) + 1) / 2;
-			res.reserve(cap);
-			res.push_back(coord);
 
-			std::array<World::ChunkCoord, 4> offset{
-				{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}};
+			for (int dx = -UPDATE_RADIUS; dx <= UPDATE_RADIUS; dx++) {
+				for (int dz = -UPDATE_RADIUS; dz <= UPDATE_RADIUS; dz++) {
+					if (SQUARE(dx) + SQUARE(dz) <= UPDATE_RADIUS_SQ) {
+						World::ChunkCoord offset = {dx, dz};
+						res.push_back(coord + offset);
+					}
+				}
+			}
 
-			for (int i = 1; i <= UPDATE_RADIUS; i++) {
-				for (unsigned int j = 0; j < offset.size(); j++) {
-					World::ChunkCoord cc = (offset[j] * i) + coord;
+			return res;
+		}
+
+		const CoordList Renderer::requestMissingChunks(World::World &w,
+													   const CoordList &list) {
+			CoordList res;
+
+			for (World::ChunkCoord cc : list) {
+				if (!w.containsChunk(cc)) {
 					res.push_back(cc);
 				}
 			}
@@ -159,27 +176,21 @@ namespace Minecraft {
 			return res;
 		}
 
-		void Renderer::requestMissingChunks(World::World &w,
-											const CoordList &list) {
-			auto setQuery = [&](int x, int y, int z, Block::BlockID id) {
-				w.setBlockWorld(x, y, z, id);
-			};
-			World::WorldGen &gen = w.getWorldGen();
-
-			for (World::ChunkCoord cc : list) {
-				if (!w.containsChunk(cc)) {
-					gen.chunkGen(cc, setQuery);
-				}
-			}
-		}
-
-		const CoordList
-		Renderer::enqueDirtyChunksForMeshing(World::World &w,
-											 const World::ChunkCoord &coord) {
+		const CoordList Renderer::enqueDirtyChunksForMeshing(
+			World::World &w, const World::ChunkCoord &playerCoord) {
+			CoordList res;
 			auto chunks = w.getChunkSnapshot();
 			for (auto it : chunks) {
+				World::ChunkCoord coord = it.first;
+				World::ChunkPtr chunk = it.second;
+				double dist = EUCLDISTSQ(coord, playerCoord);
 
+				if (chunk->dirty && dist <= SQUARE(RENDER_RADIUS + 1)) {
+					res.push_back(coord);
+				}
 			}
+
+			return res;
 		}
 	} // namespace GFX
 } // namespace Minecraft

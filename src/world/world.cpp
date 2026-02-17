@@ -72,6 +72,10 @@ namespace Minecraft {
 		}
 
 		// World editing functions
+		void World::destroyChunk(const ChunkCoord &coord) {
+			chunks.erase(coord);
+		}
+
 		void World::createChunk(const ChunkCoord &coord) {
 			ChunkPtr chunk = std::make_shared<Chunk>(coord);
 			auto [it, inserted] = chunks.try_emplace(coord, chunk);

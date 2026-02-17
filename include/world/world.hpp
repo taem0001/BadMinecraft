@@ -19,8 +19,7 @@ namespace Minecraft {
 
 				ChunkPtr getChunk(const ChunkCoord &coord);
 				std::shared_ptr<const Chunk> getChunk(const ChunkCoord &coord) const;
-
-				ChunkPtr getOrCreateChunk(const ChunkCoord &coord);
+				void destroyChunk(const ChunkCoord &coord);
 
 				ChunkSnapshot getChunkSnapshot() const;
 
@@ -41,6 +40,8 @@ namespace Minecraft {
 
 				void createChunk(const ChunkCoord &coord);
 				void markDirtyIfLoaded(const ChunkCoord &coord);
+
+				ChunkPtr getOrCreateChunk(const ChunkCoord &coord);
 		};
 	} // namespace World
 } // namespace Minecraft

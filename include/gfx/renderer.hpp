@@ -14,6 +14,7 @@
 namespace Minecraft {
 	namespace GFX {
 		using CoordList = std::vector<World::ChunkCoord>;
+		using MeshList = std::vector<std::pair<World::ChunkCoord, Meshing::MeshData>>;
 
 		struct Plane {
 				glm::vec3 normal = {0, 1, 0};
@@ -52,8 +53,8 @@ namespace Minecraft {
 				Texture texture;
 
 				int width, height;
-				double const RENDER_RADIUS;
-				double const UPDATE_RADIUS;
+				double const RENDER_RADIUS, UPDATE_RADIUS;
+				double const RENDER_RADIUS_SQ, UPDATE_RADIUS_SQ;
 
 				Plane normalizePlane(const glm::vec4 &v);
 				Frustum getFrustum();
@@ -63,7 +64,7 @@ namespace Minecraft {
 				bool aabbInFrustum(const aabb &b, const Frustum &f);
 
 				const CoordList computeWantedCoords(const World::ChunkCoord &playerCoord) const;
-				void requestMissingChunks(World::World &w, const CoordList &list);
+				const CoordList requestMissingChunks(World::World &w, const CoordList &list);
 				const CoordList enqueDirtyChunksForMeshing(World::World &w, const World::ChunkCoord &playerCoord);
 		};
 	} // namespace GFX
