@@ -10,9 +10,9 @@ class Game {
 		Game() : window(), renderer(), world(23598523) {}
 
 		void runGame() {
-			std::cout << "[INFO] Starting game." << std::endl;
+			std::cout << INFO << " Starting game." << std::endl;
 			window.windowLoop(renderer, world);
-			std::cout << "[INFO] Shutting down." << std::endl;
+			std::cout << INFO << " Shutting down." << std::endl;
 		}
 
 	private:

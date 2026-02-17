@@ -2,7 +2,7 @@
 
 namespace Minecraft {
 	namespace World {
-		World::World(u64 s) : seed(s), gen(WorldGen(s, 4, 50.0, 0.35, 2.3)) {}
+		World::World(u64 s) : seed(s), gen(WorldGen(s, 4, 50.0, 0.35, 1.7)) {}
 
 		// Getters / Setters
 		ChunkPtr World::getChunk(const ChunkCoord &coord) {
@@ -85,9 +85,6 @@ namespace Minecraft {
 				markDirtyIfLoaded(coord + (ChunkCoord){1, 0});
 				markDirtyIfLoaded(coord + (ChunkCoord){0, -1});
 				markDirtyIfLoaded(coord + (ChunkCoord){0, 1});
-
-				// std::cout << "[INFO] Created chunk at " << coord << "."
-				// 		  << std::endl;
 			}
 		}
 

@@ -15,6 +15,7 @@
 
 #define WIDTH  1280
 #define HEIGHT 720
+#define INFO "\x1b[34m[INFO]\x1b[0m"
 
 enum class FaceDir { PZ, NZ, PX, NX, PY, NY };
 

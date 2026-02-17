@@ -26,6 +26,11 @@ namespace Minecraft {
 					return {x + other.x, z + other.z};
 				}
 
+				template <typename T>
+				ChunkCoord operator*(const T mult) noexcept {
+					return {x * mult, z * mult};
+				}
+
 				friend std::ostream &operator<<(std::ostream &out,
 												const ChunkCoord &cc) noexcept {
 					return out << "(" << cc.x << "; " << cc.z << ")";

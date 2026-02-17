@@ -60,9 +60,9 @@ namespace Minecraft {
 			glCullFace(GL_FRONT);
 
 			// Log info
-			std::cout << "[INFO] Renderer: " << glGetString(GL_RENDERER) << "."
+			std::cout << INFO << " Renderer: " << glGetString(GL_RENDERER) << "."
 					  << std::endl;
-			std::cout << "[INFO] OpenGL version supported "
+			std::cout << INFO << " OpenGL version supported "
 					  << glGetString(GL_VERSION) << "." << std::endl;
 		}
 
@@ -88,7 +88,7 @@ namespace Minecraft {
 			}
 			double spent = glfwGetTime() - start;
 			double avgFPS = frames / spent;
-			std::cout << "[INFO] Avg. FPS: " << avgFPS << std::endl;
+			std::cout << INFO << " Avg. FPS: " << avgFPS << std::endl;
 		}
 
 		Window::~Window() {
