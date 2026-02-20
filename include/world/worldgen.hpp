@@ -5,15 +5,15 @@
 #include "../util/types.hpp"
 #include "chunk.hpp"
 
+struct Chunk;
+
 namespace Minecraft {
 	namespace World {
-		using SetQuery = std::function<void(int, int, int, Block::BlockID)>;
-
 		class WorldGen {
 			public:
 				WorldGen(u64 seed, int octaves = 4, double scale = 50.0,
 						 double persistance = 0.5, double lacunarity = 2.0);
-				void chunkGen(const ChunkCoord &coord, SetQuery query);
+				void chunkGen(const std::shared_ptr<Chunk> &playerChunk);
 
 			private:
 				u64 seed;

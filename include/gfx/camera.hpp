@@ -15,7 +15,7 @@ namespace Minecraft {
 		const double SENSITIVITY = 0.1f;
 		const double FOVY = 45.0f;
 		const double NEAR = 0.1f;
-		const double FAR = 100.0f;
+		const double FAR = 200.0f;
 
 		class Camera {
 			public:

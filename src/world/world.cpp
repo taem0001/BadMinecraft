@@ -36,6 +36,22 @@ namespace Minecraft {
 			return res;
 		}
 
+		NeighborSnapshot World::getNeighborSnapshot(const ChunkPtr &chunk) const {
+			NeighborSnapshot res;
+			res.center = chunk;
+		
+			ChunkCoord px = chunk->coord + (ChunkCoord){1, 0};
+			res.px = getChunk(px);
+			ChunkCoord nx = chunk->coord + (ChunkCoord){-1, 0};
+			res.nx = getChunk(nx);
+			ChunkCoord pz = chunk->coord + (ChunkCoord){0, 1};
+			res.pz = getChunk(pz);
+			ChunkCoord nz = chunk->coord + (ChunkCoord){0, -1};
+			res.nz = getChunk(nz);
+
+			return res;
+		}
+
 		void World::markDirtyIfLoaded(const ChunkCoord &coord) {
 			ChunkPtr c = getChunk(coord);
 			if (c != nullptr) {

@@ -4,7 +4,7 @@ namespace Minecraft {
 	namespace GFX {
 		Renderer::Renderer()
 			: cam(Camera(glm::vec3(0.0f, 70.0f, 0.0f))), width(WIDTH),
-			  height(HEIGHT), RENDER_RADIUS(3), UPDATE_RADIUS(5),
+			  height(HEIGHT), RENDER_RADIUS(5), UPDATE_RADIUS(8),
 			  RENDER_RADIUS_SQ(SQUARE(RENDER_RADIUS)),
 			  UPDATE_RADIUS_SQ(SQUARE(UPDATE_RADIUS)) {
 			shader.init("res/shaders/block.vert", "res/shaders/block.frag");
@@ -12,14 +12,6 @@ namespace Minecraft {
 		}
 
 		void Renderer::updateChunks(World::World &w) {
-			auto blockQuery = [&](int x, int y, int z) {
-				return w.getBlockWorld(x, y, z);
-			};
-
-			auto setQuery = [&](int x, int y, int z, Block::BlockID id) {
-				w.setBlockWorld(x, y, z, id);
-			};
-
 			World::ChunkCoord playerChunk = {floorDiv(cam.pos[0], CHUNK_MAX_X),
 											 floorDiv(cam.pos[2], CHUNK_MAX_Z)};
 
@@ -29,21 +21,14 @@ namespace Minecraft {
 			const CoordList genJobs = requestMissingChunks(w, wantedCoords);
 
 			for (World::ChunkCoord cc : genJobs) {
-				gen.chunkGen(cc, setQuery);
+				World::ChunkPtr chunk = w.getOrCreateChunk(cc);
+				gen.chunkGen(chunk);
 			}
 
 			const CoordList meshJobs =
 				enqueDirtyChunksForMeshing(w, playerChunk);
 
-			MeshList uploadJobs;
-			uploadJobs.reserve(meshJobs.size());
-
-			for (World::ChunkCoord cc : meshJobs) {
-				World::ChunkPtr chunk = w.getChunk(cc);
-				Meshing::MeshData cpu =
-					Meshing::ChunkMesher::build(chunk, blockQuery);
-				uploadJobs.push_back({cc, std::move(cpu)});
-			}
+			const MeshList uploadJobs = makeChunksMeshes(w, meshJobs);
 
 			for (auto &it : uploadJobs) {
 				World::ChunkCoord cc = it.first;
@@ -188,6 +173,21 @@ namespace Minecraft {
 				if (chunk->dirty && dist <= SQUARE(RENDER_RADIUS + 1)) {
 					res.push_back(coord);
 				}
+			}
+
+			return res;
+		}
+
+		const MeshList Renderer::makeChunksMeshes(World::World &w,
+												  const CoordList &list) {
+			MeshList res;
+			res.reserve(list.size());
+
+			for (World::ChunkCoord cc : list) {
+				World::ChunkPtr chunk = w.getChunk(cc);
+				World::NeighborSnapshot snapshot = w.getNeighborSnapshot(chunk);
+				Meshing::MeshData cpu = Meshing::ChunkMesher::build(snapshot);
+				res.push_back({cc, std::move(cpu)});
 			}
 
 			return res;

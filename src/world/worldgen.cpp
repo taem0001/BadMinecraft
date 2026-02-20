@@ -26,18 +26,20 @@ namespace Minecraft {
 			}
 		}
 
-		void WorldGen::chunkGen(const ChunkCoord &playerChunk, SetQuery query) {
-			u64 chunkSeed = hashChunk(seed, playerChunk.x, playerChunk.z);
+		void WorldGen::chunkGen(const std::shared_ptr<Chunk> &playerChunk) {
+			u64 chunkSeed =
+				hashChunk(seed, playerChunk->coord.x, playerChunk->coord.z);
 			std::mt19937_64 rng(chunkSeed);
 			std::uniform_int_distribution<int> dirtDist(3, 5);
 
-			std::cout << INFO << " Generating chunk at: (" << playerChunk.x
-					  << "; " << playerChunk.z << ")" << std::endl;
+			std::cout << INFO << " Generating chunk at: ("
+					  << playerChunk->coord.x << "; " << playerChunk->coord.z
+					  << ")" << std::endl;
 
 			for (int lx = 0; lx < CHUNK_MAX_X; lx++) {
 				for (int lz = 0; lz < CHUNK_MAX_Z; lz++) {
-					int wx = playerChunk.x * CHUNK_MAX_X + lx;
-					int wz = playerChunk.z * CHUNK_MAX_Z + lz;
+					int wx = playerChunk->coord.x * CHUNK_MAX_X + lx;
+					int wz = playerChunk->coord.z * CHUNK_MAX_Z + lz;
 
 					double freq = 1;
 					double amp = 1;
@@ -67,11 +69,11 @@ namespace Minecraft {
 
 					for (int y = 0; y < height; y++) {
 						if (y == height - 1) {
-							query(wx, y, wz, Block::GRASS);
+							playerChunk->setLocalBlock(lx, y, lz, Block::GRASS);
 						} else if (y > height - dirtOffset) {
-							query(wx, y, wz, Block::DIRT);
+							playerChunk->setLocalBlock(lx, y, lz, Block::DIRT);
 						} else {
-							query(wx, y, wz, Block::STONE);
+							playerChunk->setLocalBlock(lx, y, lz, Block::STONE);
 						}
 					}
 				}

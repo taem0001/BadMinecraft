@@ -66,6 +66,7 @@ namespace Minecraft {
 				const CoordList computeWantedCoords(const World::ChunkCoord &playerCoord) const;
 				const CoordList requestMissingChunks(World::World &w, const CoordList &list);
 				const CoordList enqueDirtyChunksForMeshing(World::World &w, const World::ChunkCoord &playerCoord);
+				const MeshList makeChunksMeshes(World::World &w, const CoordList &list);
 		};
 	} // namespace GFX
 } // namespace Minecraft
