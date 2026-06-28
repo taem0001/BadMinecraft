@@ -11,8 +11,7 @@ namespace Minecraft {
 			return it->second;
 		}
 
-		std::shared_ptr<const Chunk>
-		World::getChunk(const ChunkCoord &coord) const {
+		std::shared_ptr<const Chunk> World::getChunk(const ChunkCoord &coord) const {
 			auto it = chunks.find(coord);
 			if (it == chunks.end()) return nullptr;
 			return it->second;
@@ -39,7 +38,7 @@ namespace Minecraft {
 		NeighborSnapshot World::getNeighborSnapshot(const ChunkPtr &chunk) const {
 			NeighborSnapshot res;
 			res.center = chunk;
-		
+
 			ChunkCoord px = chunk->coord + (ChunkCoord){1, 0};
 			res.px = getChunk(px);
 			ChunkCoord nx = chunk->coord + (ChunkCoord){-1, 0};
@@ -61,8 +60,7 @@ namespace Minecraft {
 
 		Block::BlockID World::getBlockWorld(int wx, int wy, int wz) const {
 			// Find chunk with world coordinates
-			ChunkCoord coord = {floorDiv(wx, CHUNK_MAX_X),
-								floorDiv(wz, CHUNK_MAX_Z)};
+			ChunkCoord coord = {floorDiv(wx, CHUNK_MAX_X), floorDiv(wz, CHUNK_MAX_Z)};
 			const std::shared_ptr<const Chunk> chunk = getChunk(coord);
 
 			// If chunk doesn't exist, then return air
@@ -83,14 +81,10 @@ namespace Minecraft {
 
 		WorldGen &World::getWorldGen() { return gen; }
 
-		bool World::containsChunk(const ChunkCoord &coord) {
-			return chunks.contains(coord);
-		}
+		bool World::containsChunk(const ChunkCoord &coord) { return chunks.contains(coord); }
 
 		// World editing functions
-		void World::destroyChunk(const ChunkCoord &coord) {
-			chunks.erase(coord);
-		}
+		void World::destroyChunk(const ChunkCoord &coord) { chunks.erase(coord); }
 
 		void World::createChunk(const ChunkCoord &coord) {
 			ChunkPtr chunk = std::make_shared<Chunk>(coord);
@@ -110,8 +104,7 @@ namespace Minecraft {
 
 		void World::setBlockWorld(int wx, int wy, int wz, Block::BlockID id) {
 			// Define the chunk coordinates and get the chunk
-			ChunkCoord coord = {floorDiv(wx, CHUNK_MAX_X),
-								floorDiv(wz, CHUNK_MAX_Z)};
+			ChunkCoord coord = {floorDiv(wx, CHUNK_MAX_X), floorDiv(wz, CHUNK_MAX_Z)};
 			ChunkPtr chunk = getOrCreateChunk(coord);
 
 			// Convert world coordinates to local chunk coordinates
@@ -121,11 +114,9 @@ namespace Minecraft {
 
 			// Mark neighboring chunk dirty if at chunk border
 			if (localx == 0) markDirtyIfLoaded(coord + (ChunkCoord){-1, 0});
-			if (localx == CHUNK_MAX_X - 1)
-				markDirtyIfLoaded(coord + (ChunkCoord){1, 0});
+			if (localx == CHUNK_MAX_X - 1) markDirtyIfLoaded(coord + (ChunkCoord){1, 0});
 			if (localz == 0) markDirtyIfLoaded(coord + (ChunkCoord){0, -1});
-			if (localz == CHUNK_MAX_Z - 1)
-				markDirtyIfLoaded(coord + (ChunkCoord){0, 1});
+			if (localz == CHUNK_MAX_Z - 1) markDirtyIfLoaded(coord + (ChunkCoord){0, 1});
 
 			// Place block at the coordinates
 			chunk->setLocalBlock(localx, localy, localz, id);

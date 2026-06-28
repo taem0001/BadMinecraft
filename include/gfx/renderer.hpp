@@ -7,15 +7,13 @@
 #include "../world/worldgen.hpp"
 #include "camera.hpp"
 #include "chunkmesh.hpp"
+#include "chunkstreamer.hpp"
 #include "gfx.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 
 namespace Minecraft {
 	namespace GFX {
-		using CoordList = std::vector<World::ChunkCoord>;
-		using MeshList = std::vector<std::pair<World::ChunkCoord, Meshing::MeshData>>;
-
 		struct Plane {
 				glm::vec3 normal = {0, 1, 0};
 				float distance = 0.0;
@@ -46,27 +44,19 @@ namespace Minecraft {
 				}
 
 			private:
-				std::unordered_map<World::ChunkCoord, ChunkMesh> meshes;
 				Camera cam;
-
+				ChunkStreamer streamer;
 				Shader shader;
 				Texture texture;
 
 				int width, height;
-				double const RENDER_RADIUS, UPDATE_RADIUS;
-				double const RENDER_RADIUS_SQ, UPDATE_RADIUS_SQ;
 
 				Plane normalizePlane(const glm::vec4 &v);
 				Frustum getFrustum();
 				aabb getAABB(const World::ChunkCoord &coord);
 
-				bool aabbOutsidePlane(const aabb &b, const Plane& p);
+				bool aabbOutsidePlane(const aabb &b, const Plane &p);
 				bool aabbInFrustum(const aabb &b, const Frustum &f);
-
-				const CoordList computeWantedCoords(const World::ChunkCoord &playerCoord) const;
-				const CoordList requestMissingChunks(World::World &w, const CoordList &list);
-				const CoordList enqueDirtyChunksForMeshing(World::World &w, const World::ChunkCoord &playerCoord);
-				const MeshList makeChunksMeshes(World::World &w, const CoordList &list);
 		};
 	} // namespace GFX
 } // namespace Minecraft

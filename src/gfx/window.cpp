@@ -7,23 +7,17 @@ namespace Minecraft {
 			std::cerr << "[ERROR] " << description << "." << std::endl;
 		}
 
-		void Window::keyCallback(GLFWwindow *window, int key, int scancode,
-								 int action, int mods) {
-			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-				glfwSetWindowShouldClose(window, GLFW_TRUE);
-			if (key == GLFW_KEY_L && action == GLFW_PRESS)
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			if (key == GLFW_KEY_F && action == GLFW_PRESS)
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(window, GLFW_TRUE);
+			if (key == GLFW_KEY_L && action == GLFW_PRESS) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			if (key == GLFW_KEY_F && action == GLFW_PRESS) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
-		void Window::framebufferSizeCallback(GLFWwindow *window, int width,
-											 int height) {
+		void Window::framebufferSizeCallback(GLFWwindow *window, int width, int height) {
 			glViewport(0, 0, width, height);
 		}
 
-		Window::Window()
-			: width(WIDTH), height(HEIGHT), deltatime(0.0f), lastframe(0.0f) {
+		Window::Window() : width(WIDTH), height(HEIGHT), deltatime(0.0f), lastframe(0.0f) {
 
 			glfwSetErrorCallback(errorCallback);
 
@@ -35,8 +29,7 @@ namespace Minecraft {
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-			this->handle =
-				glfwCreateWindow(width, height, "BadMinecraft", NULL, NULL);
+			this->handle = glfwCreateWindow(width, height, "BadMinecraft", NULL, NULL);
 
 			if (!handle) {
 				glfwTerminate();
@@ -47,8 +40,7 @@ namespace Minecraft {
 			glfwSetFramebufferSizeCallback(handle, framebufferSizeCallback);
 
 			glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			if (glfwRawMouseMotionSupported())
-				glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+			if (glfwRawMouseMotionSupported()) glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
 			glfwMakeContextCurrent(handle);
 			gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -60,10 +52,8 @@ namespace Minecraft {
 			glCullFace(GL_FRONT);
 
 			// Log info
-			std::cout << INFO << " Renderer: " << glGetString(GL_RENDERER) << "."
-					  << std::endl;
-			std::cout << INFO << " OpenGL version supported "
-					  << glGetString(GL_VERSION) << "." << std::endl;
+			std::cout << INFO << " Renderer: " << glGetString(GL_RENDERER) << "." << std::endl;
+			std::cout << INFO << " OpenGL version supported " << glGetString(GL_VERSION) << "." << std::endl;
 		}
 
 		void Window::windowLoop(Renderer &r, World::World &w) {
@@ -125,18 +115,12 @@ namespace Minecraft {
 		void Window::processInput(Renderer &r) {
 			Camera &cam = r.getCam();
 
-			if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
-				cam.processKey(FORWARD, deltatime);
-			if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS)
-				cam.processKey(BACKWARD, deltatime);
-			if (glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS)
-				cam.processKey(LEFT, deltatime);
-			if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS)
-				cam.processKey(RIGHT, deltatime);
-			if (glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS)
-				cam.processKey(UP, deltatime);
-			if (glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-				cam.processKey(DOWN, deltatime);
+			if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS) cam.processKey(FORWARD, deltatime);
+			if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS) cam.processKey(BACKWARD, deltatime);
+			if (glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS) cam.processKey(LEFT, deltatime);
+			if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS) cam.processKey(RIGHT, deltatime);
+			if (glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS) cam.processKey(UP, deltatime);
+			if (glfwGetKey(handle, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) cam.processKey(DOWN, deltatime);
 		}
 	} // namespace GFX
 } // namespace Minecraft

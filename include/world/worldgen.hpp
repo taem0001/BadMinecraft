@@ -11,8 +11,8 @@ namespace Minecraft {
 	namespace World {
 		class WorldGen {
 			public:
-				WorldGen(u64 seed, int octaves = 4, double scale = 50.0,
-						 double persistance = 0.5, double lacunarity = 2.0);
+				WorldGen(u64 seed, int octaves = 4, double scale = 50.0, double persistance = 0.5,
+						 double lacunarity = 2.0);
 				void chunkGen(const std::shared_ptr<Chunk> &playerChunk);
 
 			private:

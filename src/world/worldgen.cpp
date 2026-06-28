@@ -20,20 +20,17 @@ namespace Minecraft {
 			std::uniform_int_distribution<int> offsetDist(-100000, 100000);
 
 			for (int i = 0; i < o; i++) {
-				std::array<int, 2> offsets = {offsetDist(worldRng),
-											  offsetDist(worldRng)};
+				std::array<int, 2> offsets = {offsetDist(worldRng), offsetDist(worldRng)};
 				octaveOffset.push_back(offsets);
 			}
 		}
 
 		void WorldGen::chunkGen(const std::shared_ptr<Chunk> &playerChunk) {
-			u64 chunkSeed =
-				hashChunk(seed, playerChunk->coord.x, playerChunk->coord.z);
+			u64 chunkSeed = hashChunk(seed, playerChunk->coord.x, playerChunk->coord.z);
 			std::mt19937_64 rng(chunkSeed);
 			std::uniform_int_distribution<int> dirtDist(3, 5);
 
-			std::cout << INFO << " Generating chunk at: ("
-					  << playerChunk->coord.x << "; " << playerChunk->coord.z
+			std::cout << INFO << " Generating chunk at: (" << playerChunk->coord.x << "; " << playerChunk->coord.z
 					  << ")" << std::endl;
 
 			for (int lx = 0; lx < CHUNK_MAX_X; lx++) {
@@ -49,8 +46,7 @@ namespace Minecraft {
 					for (int i = 0; i < octaves; i++) {
 						double sampleX = wx / scale * freq + octaveOffset[i][0];
 						double sampleZ = wz / scale * freq + octaveOffset[i][1];
-						double perlinVal =
-							Perlin::perlin(sampleX, 0.0, sampleZ);
+						double perlinVal = Perlin::perlin(sampleX, 0.0, sampleZ);
 						noiseH += perlinVal * amp;
 
 						maxAmp += amp;

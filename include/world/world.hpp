@@ -22,8 +22,7 @@ namespace Minecraft {
 				World(u64 seed);
 
 				ChunkPtr getChunk(const ChunkCoord &coord);
-				std::shared_ptr<const Chunk>
-				getChunk(const ChunkCoord &coord) const;
+				std::shared_ptr<const Chunk> getChunk(const ChunkCoord &coord) const;
 				ChunkPtr getOrCreateChunk(const ChunkCoord &coord);
 				void destroyChunk(const ChunkCoord &coord);
 

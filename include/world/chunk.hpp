@@ -14,25 +14,15 @@ namespace Minecraft {
 		struct ChunkCoord {
 				int x, z;
 
-				glm::vec3 worldOrigin() const {
-					return {x * CHUNK_MAX_X, 0, z * CHUNK_MAX_Z};
-				}
+				glm::vec3 worldOrigin() const { return {x * CHUNK_MAX_X, 0, z * CHUNK_MAX_Z}; }
 
-				bool operator==(const ChunkCoord &other) const noexcept {
-					return (x == other.x && z == other.z);
-				}
+				bool operator==(const ChunkCoord &other) const noexcept { return (x == other.x && z == other.z); }
 
-				ChunkCoord operator+(const ChunkCoord &other) const noexcept {
-					return {x + other.x, z + other.z};
-				}
+				ChunkCoord operator+(const ChunkCoord &other) const noexcept { return {x + other.x, z + other.z}; }
 
-				template <typename T>
-				ChunkCoord operator*(const T mult) noexcept {
-					return {x * mult, z * mult};
-				}
+				template <typename T> ChunkCoord operator*(const T mult) noexcept { return {x * mult, z * mult}; }
 
-				friend std::ostream &operator<<(std::ostream &out,
-												const ChunkCoord &cc) noexcept {
+				friend std::ostream &operator<<(std::ostream &out, const ChunkCoord &cc) noexcept {
 					return out << "(" << cc.x << "; " << cc.z << ")";
 				}
 		};
@@ -40,9 +30,7 @@ namespace Minecraft {
 		struct Chunk {
 				ChunkCoord coord;
 				bool dirty = true;
-				std::array<Block::BlockID,
-						   CHUNK_MAX_X * CHUNK_MAX_Y * CHUNK_MAX_Z>
-					blocks{};
+				std::array<Block::BlockID, CHUNK_MAX_X * CHUNK_MAX_Y * CHUNK_MAX_Z> blocks{};
 
 				static constexpr int index(int x, int y, int z);
 				void setLocalBlock(int lx, int ly, int lz, Block::BlockID id);
@@ -52,8 +40,7 @@ namespace Minecraft {
 } // namespace Minecraft
 
 template <> struct std::hash<Minecraft::World::ChunkCoord> {
-		size_t
-		operator()(const Minecraft::World::ChunkCoord &c) const noexcept {
+		size_t operator()(const Minecraft::World::ChunkCoord &c) const noexcept {
 			size_t h1 = std::hash<int>{}(c.x);
 			size_t h2 = std::hash<int>{}(c.z);
 
