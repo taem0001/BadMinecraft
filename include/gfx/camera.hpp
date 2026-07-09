@@ -10,12 +10,12 @@ namespace Minecraft {
 		enum CamMovement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 
 		const double YAW = -90.0;
-		const double PITCH = 0.0f;
-		const double SPEED = 7.0f;
-		const double SENSITIVITY = 0.1f;
-		const double FOVY = 45.0f;
-		const double NEAR = 0.1f;
-		const double FAR = 200.0f;
+		const double PITCH = 0.0;
+		const double SPEED = 7.0;
+		const double SENSITIVITY = 0.1;
+		const double FOVY = 45.0;
+		const double NEAR = 0.1;
+		const double FAR = 200.0;
 
 		class Camera {
 			public:

@@ -5,8 +5,8 @@ namespace Minecraft {
 		static constexpr int SX = CHUNK_MAX_X;
 		static constexpr int SZ = CHUNK_MAX_Z;
 		static constexpr int SY = CHUNK_MAX_Y;
-		static constexpr int ATLAS_W = 32;
-		static constexpr int ATLAS_H = 32;
+		static constexpr int ATLAS_W = 48;
+		static constexpr int ATLAS_H = 48;
 		static constexpr int TILE_W = 16;
 		static constexpr int TILE_H = 16;
 

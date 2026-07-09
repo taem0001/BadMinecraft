@@ -7,7 +7,7 @@ namespace Minecraft {
 	namespace Block {
 		using BlockID = u8;
 
-		enum BlockType : BlockID { AIR, DIRT, STONE, GRASS };
+		enum BlockType : BlockID { AIR, DIRT, STONE, GRASS, SAND };
 
 		struct TexCoord {
 				int u;

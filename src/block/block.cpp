@@ -15,6 +15,8 @@ namespace Minecraft {
 					return {0, 1};
 				else
 					return {0, 0};
+			case SAND:
+				return {0, 2};
 			default:
 				return {0, 0};
 			}

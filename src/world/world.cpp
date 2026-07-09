@@ -2,7 +2,7 @@
 
 namespace Minecraft {
 	namespace World {
-		World::World(u64 s) : seed(s), gen(WorldGen(s, 4, 50.0, 0.35, 1.7)) {}
+		World::World(u64 s) : seed(s), gen(WorldGen(s, 4, 50.0, -0.1, 6.0, 4, 98.0, -0.1, 1.6)) {}
 
 		// Getters / Setters
 		ChunkPtr World::getChunk(const ChunkCoord &coord) {

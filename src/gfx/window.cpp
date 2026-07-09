@@ -18,7 +18,6 @@ namespace Minecraft {
 		}
 
 		Window::Window() : width(WIDTH), height(HEIGHT), deltatime(0.0f), lastframe(0.0f) {
-
 			glfwSetErrorCallback(errorCallback);
 
 			if (!glfwInit()) {
