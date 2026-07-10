@@ -88,8 +88,7 @@ namespace Minecraft {
 		}
 
 		void Shader::setMat4(const char *name, glm::mat4 matrix) const {
-			glUniformMatrix4fv(glGetUniformLocation(handle, name), 1, GL_FALSE,
-							   glm::value_ptr(matrix));
+			glUniformMatrix4fv(glGetUniformLocation(handle, name), 1, GL_FALSE, glm::value_ptr(matrix));
 		}
 	} // namespace GFX
 } // namespace Minecraft

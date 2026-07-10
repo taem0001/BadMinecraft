@@ -2,10 +2,8 @@
 
 namespace Minecraft {
 	namespace GFX {
-		Camera::Camera(glm::vec3 p, glm::vec3 u, double y, double pi, double n,
-					   double f)
-			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED),
-			  mousesens(SENSITIVITY), fovy(FOVY) {
+		Camera::Camera(glm::vec3 p, glm::vec3 u, double y, double pi, double n, double f)
+			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED), mousesens(SENSITIVITY), fovy(FOVY) {
 			pos = p;
 			worldup = u;
 			yaw = y;
@@ -15,11 +13,9 @@ namespace Minecraft {
 			updateCamVects();
 		}
 
-		Camera::Camera(double posX, double posY, double posZ, double upX,
-					   double upY, double upZ, double y, double p, double n,
-					   double f)
-			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED),
-			  mousesens(SENSITIVITY), fovy(FOVY) {
+		Camera::Camera(double posX, double posY, double posZ, double upX, double upY, double upZ, double y, double p,
+					   double n, double f)
+			: front(glm::vec3(0.0f, 0.0f, -1.0f)), movespeed(SPEED), mousesens(SENSITIVITY), fovy(FOVY) {
 			pos = glm::vec3(posX, posY, posZ);
 			worldup = glm::vec3(upX, upY, upZ);
 			yaw = y;
@@ -29,14 +25,10 @@ namespace Minecraft {
 			updateCamVects();
 		}
 
-		glm::mat4 Camera::getViewMat() {
-			return glm::lookAt(pos, pos + front, up);
-		}
+		glm::mat4 Camera::getViewMat() { return glm::lookAt(pos, pos + front, up); }
 
 		glm::mat4 Camera::getProjMat(int width, int height) {
-			return glm::perspective(glm::radians((float)fovy),
-									(float)width / (float)height, (float)near,
-									(float)far);
+			return glm::perspective(glm::radians((float)fovy), (float)width / (float)height, (float)near, (float)far);
 		}
 
 		void Camera::processKey(CamMovement move, double deltatime) {
@@ -64,9 +56,7 @@ namespace Minecraft {
 			}
 		}
 
-		void Camera::processMouse(double xoffset, double yoffset,
-								  GLboolean constrainpitch,
-								  GLboolean constrainyaw) {
+		void Camera::processMouse(double xoffset, double yoffset, GLboolean constrainpitch, GLboolean constrainyaw) {
 			xoffset *= mousesens;
 			yoffset *= mousesens;
 			yaw += xoffset;

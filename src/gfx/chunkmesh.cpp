@@ -2,10 +2,7 @@
 
 namespace Minecraft {
 	namespace GFX {
-		ChunkMesh::ChunkMesh()
-			: vao(0), vbo(0), ebo(0), vertexCount(0), configured(false) {
-			createGLObjects();
-		}
+		ChunkMesh::ChunkMesh() : vao(0), vbo(0), ebo(0), vertexCount(0), configured(false) { createGLObjects(); }
 
 		ChunkMesh::~ChunkMesh() { destroyGLObjects(); }
 
@@ -17,25 +14,21 @@ namespace Minecraft {
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-			glBufferData(GL_ARRAY_BUFFER,
-						 (GLsizeiptr)(vertexCount * sizeof(Meshing::Vertex)),
-						 data.vertices.data(), GL_DYNAMIC_DRAW);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-						 (GLsizeiptr)(indexCount * sizeof(unsigned int)),
-						 data.indices.data(), GL_DYNAMIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(vertexCount * sizeof(Meshing::Vertex)), data.vertices.data(),
+						 GL_DYNAMIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)(indexCount * sizeof(unsigned int)), data.indices.data(),
+						 GL_DYNAMIC_DRAW);
 
 			// Configure vertex layout once
 			if (!configured) {
 				// loc 0 vertex location
 				glEnableVertexAttribArray(0);
-				glVertexAttribPointer(
-					0, 3, GL_FLOAT, GL_FALSE, sizeof(Meshing::Vertex),
-					(void *)offsetof(Meshing::Vertex, position));
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Meshing::Vertex),
+									  (void *)offsetof(Meshing::Vertex, position));
 
 				// loc 1 uv location
 				glEnableVertexAttribArray(1);
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
-									  sizeof(Meshing::Vertex),
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Meshing::Vertex),
 									  (void *)offsetof(Meshing::Vertex, uv));
 
 				configured = true;
@@ -47,8 +40,7 @@ namespace Minecraft {
 		void ChunkMesh::draw() const {
 			if (empty()) return;
 			glBindVertexArray(vao);
-			glDrawElements(GL_TRIANGLES, (GLsizei)indexCount, GL_UNSIGNED_INT,
-						   (void *)0);
+			glDrawElements(GL_TRIANGLES, (GLsizei)indexCount, GL_UNSIGNED_INT, (void *)0);
 			glBindVertexArray(0);
 		}
 

@@ -9,18 +9,30 @@
 
 namespace Minecraft {
 	namespace World {
+		using ChunkPtr = std::shared_ptr<Chunk>;
+		using ChunkMap = std::unordered_map<ChunkCoord, ChunkPtr>;
+		using ChunkSnapshot = std::vector<std::pair<ChunkCoord, ChunkPtr>>;
+
+		struct NeighborSnapshot {
+				std::shared_ptr<const Chunk> center, px, nx, pz, nz;
+		};
+
 		class World {
 			public:
 				World(u64 seed);
 
-				Chunk *getChunk(const ChunkCoord &coord);
-				const Chunk *getChunk(const ChunkCoord &coord) const;
-				Chunk &getOrCreateChunk(const ChunkCoord &coord);
-				std::unordered_map<ChunkCoord, Chunk> &getChunks();
-				const std::unordered_map<ChunkCoord, Chunk> &getChunks() const;
+				ChunkPtr getChunk(const ChunkCoord &coord);
+				std::shared_ptr<const Chunk> getChunk(const ChunkCoord &coord) const;
+				ChunkPtr getOrCreateChunk(const ChunkCoord &coord);
+				void destroyChunk(const ChunkCoord &coord);
+
+				ChunkSnapshot getChunkSnapshot() const;
+				NeighborSnapshot getNeighborSnapshot(const ChunkPtr &chunk) const;
+
 				u64 getSeed() const;
-                const WorldGen &getWorldGen() const;
-                WorldGen &getWorldGen();
+
+				const WorldGen &getWorldGen() const;
+				WorldGen &getWorldGen();
 
 				Block::BlockID getBlockWorld(int x, int y, int z) const;
 				void setBlockWorld(int wx, int wy, int wz, Block::BlockID id);
@@ -29,8 +41,8 @@ namespace Minecraft {
 
 			private:
 				u64 seed;
-				std::unordered_map<ChunkCoord, Chunk> chunks;
-                WorldGen gen;
+				ChunkMap chunks;
+				WorldGen gen;
 
 				void createChunk(const ChunkCoord &coord);
 				void markDirtyIfLoaded(const ChunkCoord &coord);

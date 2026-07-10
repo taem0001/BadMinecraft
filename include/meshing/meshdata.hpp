@@ -8,7 +8,7 @@ namespace Minecraft {
 		struct Vertex {
 				glm::vec3 position;
 				glm::vec2 uv;
-                Block::BlockID texid;
+				Block::BlockID texid;
 		};
 
 		struct MeshData {
